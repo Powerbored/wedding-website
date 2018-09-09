@@ -1,0 +1,43 @@
+
+<html>
+<head>
+	<title>{{title}}</title>
+	{{#if pageDescription}}
+		<meta name="description" property="og:description" content="{{pageDescription}}"/>
+	{{/if}}
+	{{#if buildDateTime}}
+		<meta http-equiv="last-modified" content="{{buildDateTime}}"/>
+	{{/if}}
+	<meta name="keywords" content=""/>
+	{{#if author}}
+		<meta name="author" content="{{author}}">
+	{{/if}}
+	{{#if title}}
+		<meta name="twitter:title" property="og:title" content="{{title}}"/>
+	{{/if}}
+	<meta property="og:type" content="website"/>
+	{{#if pageUrl}}
+		<link rel="canonical" href="{{pageUrl}}"/>
+		<meta property="og:url" content="{{pageUrl}}"/>
+	{{/if}}
+	{{#if favicon}}
+		<link rel="icon" href="{{favicon}}.png" type="image/x-icon"/>
+	{{/if}}
+	{{#if favicon}}
+		<link rel="apple-touch-icon-precomposed" sizes="57x57" href="{{favicon}}-57-precomposed.png"/>
+	{{/if}}
+	{{#if favicon}}
+		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{favicon}}-72-precomposed.png"/>
+	{{/if}}
+	{{#if favicon}}
+		<link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{favicon}}-114-precomposed.png"/>
+	{{/if}}
+	{{#if favicon}}
+		<link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{favicon}}-144-precomposed.png"/>
+	{{/if}}
+
+</head>
+<body itemscope="" itemtype="https://schema.org/WebPage">
+	{{> @partial-block}}
+</body>
+</html>
