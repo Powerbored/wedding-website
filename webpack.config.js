@@ -5,8 +5,7 @@ const path = require('path'),
 	content = require('./src/content.js');
 
 let
-	resolveStructure = function(structure, path = '', name = '', resolvedStructure = []) {
-		path = `${path}/${name}`;
+	resolveStructure = function(structure, name = '', path = '', resolvedStructure = []) {
 		if (structure.index) {
 			resolvedStructure.push({
 				path: path + 'index.html',
@@ -16,25 +15,12 @@ let
 		}
 		if (structure.pages && Object.keys(structure.pages).length > 0) {
 			Object.keys(structure.pages).forEach(page => {
-				resolvedStructure = resolveStructure(structure.pages, path, page, resolvedStructure);
+				resolvedStructure = resolveStructure(structure.pages, page, `${path}/${page}/`, resolvedStructure);
 			});
 		}
 		return resolvedStructure;
 	},
-	resolveStructure2 = function(structure, path, resolvedStructure) {
-		if (structure.pages && structure.pages.length > 0) {
-			Object.keys(structure.pages).forEach(page => {
-				resolvedStructure.push({
-					path: `${path}/${page}/index.html`,
-					content: structure[page].index,
-				});
-				resolvedStructure = resolveStructure(structure[page], `${path}/${page}/`, resolvedStructure);
-			});
-		} else {
-			return resolvedStructure;
-		}
-	},
-	htmlPages = resolveStructure(content.structure).map(page => new HtmlWebpackPlugin({
+	htmlPages = resolveStructure(content.structure, 'home').map(page => new HtmlWebpackPlugin({
 		filename: page.path,
 		template: path.resolve(__dirname, page.template),
 		ref: page.ref,
@@ -43,6 +29,7 @@ let
 module.exports = {
 	entry: {
 		site: path.resolve(__dirname, 'src/index.js'),
+		content: path.resolve(__dirname, 'src/content.js'),
 	},
 	plugins: [
 		...htmlPages,
@@ -89,7 +76,7 @@ module.exports = {
 					{
 						loader: 'handlebars-loader',
 						options: {
-							helperDirs: __dirname + '/src/templates/helpers',
+							helperDirs: __dirname + '/src/helpers',
 							partialDirs: __dirname + '/src/templates',
 							knownHelpersOnly: false,
 						},

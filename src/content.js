@@ -2,20 +2,24 @@ const
 	pages = {
 		home: {
 			title: 'Home',
-			body: 'This is the home page'
+			body: 'This is the home page',
+			template: 'src/index.hbs',
 		},
 		about: {
 			title: 'About',
-			body: 'This is the about page'
+			body: 'This is the about page',
+			template: 'src/index.hbs',
 		},
 		news: {
 			title: 'News',
-			body: 'The latest news'
+			body: 'The latest news',
+			template: 'src/index.hbs',
 		},
 		author: {
 			title: 'Powerbored',
-			body: 'Authored by Powerbored'
-		}
+			body: 'Authored by Powerbored',
+			template: 'src/index.hbs',
+		},
 	},
 	structure = {
 		index: pages.home,
