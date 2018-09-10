@@ -1,8 +1,8 @@
 
-{{debugObjectAsJson compilation.assets.[content.js]}}
-{{!-- {{copyObjectChildToNewContext content.pages htmlWebpackPlugin.options.ref this 'page'}}
-{{debugObjectKeys this}}
+{{importJsContent 'content.js' this}}
+{{copyObjectChildToNewContext content.pages htmlWebpackPlugin.options.ref this 'page'}}
+
 {{#> main page}}
 	<h1>{{title}}</h1>
 	<p>{{body}}</p>
-{{/main}} --}}
+{{/main}}

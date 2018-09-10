@@ -5,26 +5,29 @@ const path = require('path'),
 	content = require('./src/content.js');
 
 let
-	resolveStructure = function(structure, name = '', path = '', resolvedStructure = []) {
+	resolveStructure = function(structure, name, pagePath, resolvedStructure = []) {
 		if (structure.index) {
 			resolvedStructure.push({
-				path: path + 'index.html',
+				path: path.resolve(pagePath, 'index.html'),
 				ref: name,
 				template: structure.index.template,
 			});
 		}
-		if (structure.pages && Object.keys(structure.pages).length > 0) {
-			Object.keys(structure.pages).forEach(page => {
-				resolvedStructure = resolveStructure(structure.pages, page, `${path}/${page}/`, resolvedStructure);
+		let subPages = Object.assign({}, structure.pages);
+		console.log(subPages);
+		if (subPages && Object.keys(subPages).length > 0) {
+			Object.keys(subPages).forEach(page => {
+				resolvedStructure = resolveStructure(subPages[page], page, path.resolve(pagePath, page), resolvedStructure);
 			});
 		}
 		return resolvedStructure;
 	},
-	htmlPages = resolveStructure(content.structure, 'home').map(page => new HtmlWebpackPlugin({
+	htmlPages = resolveStructure(content.structure, 'home', 'pages').map(page => new HtmlWebpackPlugin({
 		filename: page.path,
 		template: path.resolve(__dirname, page.template),
 		ref: page.ref,
 	}));
+console.log(resolveStructure(content.structure, 'home', 'pages'));
 
 module.exports = {
 	entry: {
