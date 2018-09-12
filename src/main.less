@@ -1,0 +1,42 @@
+
+@block-padding: 1rem;
+
+@break-small: 480px;
+@break-medium: 1280px;
+
+@base-colour: hsl(216, 90%, 12%);
+@text-colour: hsl(16, 5%, 80%);
+
+@headers: "h1, h2, h3, h4, h5, h6";
+
+html {
+	background: darken(@base-colour, 2%);
+	color: @text-colour;
+}
+
+
+body {
+	font-size: 18px;
+	@media (min-width: @break-small) {
+		font-size: e("calc(18px + (25 - 18) * ((100vw - 480px) / 800))");
+	}
+	@media (min-width: @break-medium) {
+		font-size: 24px;
+	}
+	margin: @block-padding;
+	padding: @block-padding;
+	background: @base-colour;
+	min-height: calc(100vh - @block-padding * 2);
+	box-shadow:
+		0 0.1rem 0.5rem hsla(0, 0%, 0%, 0.5),
+		inset 0 0.1rem 0.5rem hsla(0, 0%, 100%, 0.1);
+}
+
+@{headers} {
+	margin: 1rem 0;
+	font-size: 1rem;
+}
+
+main {
+	text-align: center;
+}

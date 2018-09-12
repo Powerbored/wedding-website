@@ -8,7 +8,7 @@
 	},
 	"scripts": {
 		"build": "webpack --config webpack.config.js --mode=production",
-		"start": "webpack-dev-server --open --hot --watch-content-base --inline --mode=development",
+		"start": "webpack-dev-server --open --watch-content-base --inline --mode=development",
 		"init": "init.sh"
 	},
 	"private": true,
@@ -33,7 +33,9 @@
 	},
 	"dependencies": {
 		"autoprefixer": "^9.1.0",
-		"lodash": "^4.17.10"
+		"lodash": "^4.17.10",
+		"moment": "^2.22.2",
+		"semantic-ui-css": "^2.3.3"
 	},
 	"browserslist": [
 		"last 2 version",

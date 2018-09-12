@@ -27,7 +27,6 @@ let
 		template: path.resolve(__dirname, page.template),
 		ref: page.ref,
 	}));
-console.log(resolveStructure(content.structure, 'home', 'pages'));
 
 module.exports = {
 	entry: {
@@ -58,8 +57,7 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /\.(:?css|less)$/,
-				exclude: /node_modules/,
+				test: /\.(?:css|less)$/,
 				use: [
 					MiniCssExtractPlugin.loader,
 					{
@@ -74,7 +72,7 @@ module.exports = {
 					},
 				],
 			}, {
-				test: /\.(:?hbs)$/,
+				test: /\.hbs$/,
 				use: [
 					{
 						loader: 'handlebars-loader',
@@ -86,54 +84,9 @@ module.exports = {
 					},
 				],
 			}, {
-				test: /\.(png|jpg)$/,
+				test: /\.(?:png|jpg)$/,
 				loader: 'file-loader'
 			},
 		],
 	},
 };
-
-// module.exports = {
-// 	context: path.resolve(__dirname),
-// 	entry: {
-// 		home: './src/views/index.js',
-// 	},
-// 	output: {
-// 		path: path.resolve(__dirname, 'dist'),
-// 		filename: 'js/[name].js'
-// 	},
-// 	module: {
-// 		loaders: [
-// 			{
-// 				test: /\.hbs$/,
-// 				loader: 'handlebars-loader',
-// 				query: {
-// 					partialDirs: [path.resolve(__dirname, 'src', 'partials')]
-// 				}
-// 			},
-// 			{
-// 				test: /\.(png|jpg)$/,
-// 				loader: 'file-loader'
-// 			}
-// 		]
-// 	},
-// 	plugins: [
-// 		// this gets the favicon among other things... might be useful
-// 		new CopyWebpackPlugin([{ from: './src/static' }]),
-// 		new HtmlWebpackPlugin({
-// 			title: 'Home',
-// 			filename: 'index.html',
-// 			template: './src/views/index.hbs',
-// 			chunks: ['home']
-// 		}),
-// 		new HtmlWebpackPlugin({
-// 			title: 'About',
-// 			filename: 'about/index.html',
-// 			template: './src/views/about/index.hbs',
-// 			chunks: ['about']
-// 		})
-// 	],
-// 	resolve: {
-// 		extensions: ['', '.js', '.json', '.hbs']
-// 	}
-// };
