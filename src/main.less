@@ -10,13 +10,17 @@
 //@base-font-size-scaled: ~"calc("unit(@base-font-size-min, px) ~"+" (@base-font-size-max - @base-font-size-min) e(%("* ((100vw - %s) / %s - %s))", unit(@break-small, px), @break-large, @break-small));
 @base-font-size-scaled: %(~"calc(%s + %s * ((100vw - %s) / %s))", unit(@base-font-size-min, px), @base-font-size-max - @base-font-size-min, unit(@break-small, px), @break-large - @break-small);
 
-@base-colour: hsl(216, 90%, 12%);
-@text-colour: hsl(16, 5%, 80%);
+@c-deep-grey: hsl(240, 5%, 22%);
+@c-navy: hsl(216, 90%, 12%);
+@c-parchment: hsl(16, 5%, 80%);
+
+@c-background: @c-navy;
+@c-body-copy: @c-parchment;
 
 @headers: ah1, h2, h3, h4, h5, h6;
 
 html {
-	background: darken(@base-colour, 2%);
+	background: darken(@c-background, 2%);
 	font-size: unit(@base-font-size-min, px);
 	@media (min-width: unit(@break-small, px)) {
 		font-size: @base-font-size-scaled
@@ -24,7 +28,7 @@ html {
 	@media (min-width: unit(@break-large, px)) {
 		font-size: unit(@base-font-size-min, px);
 	}
-	color: @text-colour;
+	color: @c-body-copy;
 }
 
 body {
@@ -32,7 +36,7 @@ body {
 	color: inherit;
 	margin: @block-padding;
 	padding: @block-padding;
-	background: @base-colour;
+	background: @c-background;
 	height: auto;
 	min-height: calc(100vh - @block-padding * 2);
 	min-width: calc(unit(@break-min, px) - 2 * @block-padding);
@@ -51,14 +55,28 @@ main {
 }
 
 .countdown-timer {
+	height: 3rem;
+	overflow: hidden;
+
+	div, span {
+		width: 3rem;
+		height: 3rem;
+	}
+
 	div {
 		display: inline-block;
+		position: relative;
+		background: @c-deep-grey;
 
 		span {
 			display: block;
-			width: 3rem;
-			height: 3rem;
-			transform: translateY(attr(data-remainder));
+			position: absolute;
+			background: hsl(16, 5%, 80%);
+			color: @c-deep-grey;
+
+			&[role=presentation] {
+				user-select: none;
+			}
 		}
 	}
 }
