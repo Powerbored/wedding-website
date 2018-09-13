@@ -1,4 +1,5 @@
-/* eslint import window */
+// Time should probably be carried by a global scope rather than passed to each function?
+
 const
 	moment = require('moment');
 
@@ -39,17 +40,18 @@ function evaluateDifferenceFromNow(endTimeString) {
 	return {time, endTime, difference};
 }
 
-function updateElement(targetElement, difference, currentTime) {
+function updateElement(targetElement, diff, time) {
 	targetElement.innerHTML = `
-		${formatMonths(difference, currentTime, padAndSplitNumber(difference.months)[0], padAndSplitNumber())}
-		${formatMonths(difference, currentTime, padAndSplitNumber(difference.months)[1], padAndSplitNumber())}
-		${formatDays(difference, currentTime, padAndSplitNumber(difference.days)[0], padAndSplitNumber())}
-		${formatDays(difference, currentTime, padAndSplitNumber(difference.days)[1], padAndSplitNumber())}
-		${formatHours(difference, currentTime, padAndSplitNumber(difference.hours)[0], padAndSplitNumber(difference.time.clone().add(25, 'days').daysInMonth()[0]))}
-		${formatHours(difference, currentTime, padAndSplitNumber(difference.hours)[1], padAndSplitNumber(difference.time.clone().add(25, 'days').daysInMonth())[1])}
-		${formatMinutes(difference, currentTime, padAndSplitNumber(difference.minutes)[0], padAndSplitNumber())}
-		${formatMinutes(difference, currentTime, padAndSplitNumber(difference.minutes)[1], padAndSplitNumber())}
+		${formatSecondsDeciaml(diff, time)}
 	`;
+	// ${formatMonths(difference, currentTime, padAndSplitNumber(difference.months)[0], padAndSplitNumber())}
+	// ${formatMonths(difference, currentTime, padAndSplitNumber(difference.months)[1], padAndSplitNumber())}
+	// ${formatDays(difference, currentTime, padAndSplitNumber(difference.days)[0], padAndSplitNumber())}
+	// ${formatDays(difference, currentTime, padAndSplitNumber(difference.days)[1], padAndSplitNumber())}
+	// ${formatHours(difference, currentTime, padAndSplitNumber(difference.hours)[0], padAndSplitNumber(difference.time.clone().add(25, 'days').daysInMonth()[0]))}
+	// ${formatHours(difference, currentTime, padAndSplitNumber(difference.hours)[1], padAndSplitNumber(difference.time.clone().add(25, 'days').daysInMonth())[1])}
+	// ${formatMinutes(difference, currentTime, padAndSplitNumber(difference.minutes)[0], padAndSplitNumber())}
+	// ${formatMinutes(difference, currentTime, padAndSplitNumber(difference.minutes)[1], padAndSplitNumber())}
 }
 
 function padAndSplitNumber(number) {
@@ -60,35 +62,53 @@ function padAndSplitNumber(number) {
 function formatValuesAsHtml(classList, value, remainder, nextMax) {
 	return `
 		<div class="${classList}">
-			<span style="transform: rotateX(${((value > 0 ? remainder : 0) - 1) * -36}deg) translateZ(4.8rem)">
+			<span style="transform: rotateX(${((value >= 0 ? remainder : 0) - 1) * -36}deg) translateZ(4.8rem)">
 				${value}
 			</span>
-			<span style="transform: rotateX(${(value > 0 ? remainder : 0) * -36}deg) translateZ(4.8rem)" role="presentation">
+			<span style="transform: rotateX(${(value >= 0 ? remainder : 0) * -36}deg) translateZ(4.8rem)" role="presentation">
 				${value - 1 >= 0 ? value - 1 : nextMax}
 			</span>
 		</div>
 	`;
 }
 
-function formatSeconds(preciseDifferenceObject, time, value = preciseDifferenceObject.seconds, maxValue = 60) {
-	return formatValuesAsHtml('seconds', value, 1 - time.milliseconds()/1000, maxValue);
+function ones(number) {
+	return number%10;
 }
-function formatSecondsTens(preciseDifferenceObject, time, value = preciseDifferenceObject.seconds, maxValue = 60) {
-	return formatValuesAsHtml('seconds', value, 1 - preciseDifferenceObject.seconds % 10 - time.milliseconds()/1000, maxValue);
-}
-
-function formatMinutes(preciseDifferenceObject, time, value = preciseDifferenceObject.minutes, maxValue = 60) {
-	return formatValuesAsHtml('minutes', value, preciseDifferenceObject.seconds/60 - time.milliseconds()/(1000 * 60), maxValue);
+function tens(number) {
+	return Math.floor(number/10);
 }
 
-function formatHours(preciseDifferenceObject, time, value = preciseDifferenceObject.hours, maxValue = 24) {
-	return formatValuesAsHtml('hours', value, preciseDifferenceObject.minutes/60 + preciseDifferenceObject.seconds/(60 * 60), maxValue);
+function formatSeconds(diff, time) {
+	return formatValuesAsHtml('seconds', diff.seconds, 1 - time.milliseconds()/1000, 60);
+}
+function formatSecondsOnes(diff, time, value, maxValue) {
+	return formatValuesAsHtml('seconds ones', value, 1 - time.milliseconds()/1000, maxValue);
+}
+function formatSecondsTens(diff, time, value, ones, maxValue) {
+	return formatValuesAsHtml('seconds tens', value, (1- time.milliseconds()/1000) * 0.1 + ones/10, maxValue);
+}
+function formatSecondsDeciaml(diff, time) {
+	const
+		nextMax = 59;
+	return `
+		${formatSecondsTens(diff, time, tens(diff.seconds), ones(diff.seconds), tens(nextMax))}
+		${formatSecondsOnes(diff, time, ones(diff.seconds), ones(nextMax))}
+	`;
 }
 
-function formatDays(preciseDifferenceObject, time, value = preciseDifferenceObject.days, maxValue = 30) {
-	return formatValuesAsHtml('days', value, preciseDifferenceObject.hours/24 + preciseDifferenceObject.minutes/(60 * 24), time.clone().add(25, 'days').daysInMonth());
+function formatMinutes(diff, time, value = diff.minutes) {
+	return formatValuesAsHtml('minutes', value, diff.seconds/60 - time.milliseconds()/(1000 * 60), maxValue);
 }
 
-function formatMonths(preciseDifferenceObject, time, value = preciseDifferenceObject.months, maxValue = 12) {
-	return formatValuesAsHtml('months', value, preciseDifferenceObject.days/time.daysInMonth() + preciseDifferenceObject.hours/(24 * time.daysInMonth()), maxValue);
+function formatHours(diff, time, value = diff.hours) {
+	return formatValuesAsHtml('hours', value, diff.minutes/60 + diff.seconds/(60 * 60), maxValue);
+}
+
+function formatDays(diff, time, value = diff.days) {
+	return formatValuesAsHtml('days', value, diff.hours/24 + diff.minutes/(60 * 24), maxValue);
+}
+
+function formatMonths(diff, time, value = diff.months) {
+	return formatValuesAsHtml('months', value, diff.days/time.daysInMonth() + diff.hours/(24 * time.daysInMonth()), maxValue);
 }
