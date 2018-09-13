@@ -1,32 +1,41 @@
 
 @block-padding: 1rem;
 
-@break-small: 480px;
-@break-medium: 1280px;
+@break-min: 320;
+@break-small: 480;
+@break-large: 1280;
+
+@base-font-size-min: 18;
+@base-font-size-max: 24;
+//@base-font-size-scaled: ~"calc("unit(@base-font-size-min, px) ~"+" (@base-font-size-max - @base-font-size-min) e(%("* ((100vw - %s) / %s - %s))", unit(@break-small, px), @break-large, @break-small));
+@base-font-size-scaled: %(~"calc(%s + %s * ((100vw - %s) / %s))", unit(@base-font-size-min, px), @base-font-size-max - @base-font-size-min, unit(@break-small, px), @break-large - @break-small);
 
 @base-colour: hsl(216, 90%, 12%);
 @text-colour: hsl(16, 5%, 80%);
 
-@headers: "h1, h2, h3, h4, h5, h6";
+@headers: ah1, h2, h3, h4, h5, h6;
 
 html {
 	background: darken(@base-colour, 2%);
+	font-size: unit(@base-font-size-min, px);
+	@media (min-width: unit(@break-small, px)) {
+		font-size: @base-font-size-scaled
+	}
+	@media (min-width: unit(@break-large, px)) {
+		font-size: unit(@base-font-size-min, px);
+	}
 	color: @text-colour;
 }
 
-
 body {
-	font-size: 18px;
-	@media (min-width: @break-small) {
-		font-size: e("calc(18px + (25 - 18) * ((100vw - 480px) / 800))");
-	}
-	@media (min-width: @break-medium) {
-		font-size: 24px;
-	}
+	font-size: inherit;
+	color: inherit;
 	margin: @block-padding;
 	padding: @block-padding;
 	background: @base-colour;
+	height: auto;
 	min-height: calc(100vh - @block-padding * 2);
+	min-width: calc(unit(@break-min, px) - 2 * @block-padding);
 	box-shadow:
 		0 0.1rem 0.5rem hsla(0, 0%, 0%, 0.5),
 		inset 0 0.1rem 0.5rem hsla(0, 0%, 100%, 0.1);
@@ -39,4 +48,17 @@ body {
 
 main {
 	text-align: center;
+}
+
+.countdown-timer {
+	div {
+		display: inline-block;
+
+		span {
+			display: block;
+			width: 3rem;
+			height: 3rem;
+			transform: translateY(attr(data-remainder));
+		}
+	}
 }

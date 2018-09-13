@@ -14,7 +14,6 @@ let
 			});
 		}
 		let subPages = Object.assign({}, structure.pages);
-		console.log(subPages);
 		if (subPages && Object.keys(subPages).length > 0) {
 			Object.keys(subPages).forEach(page => {
 				resolvedStructure = resolveStructure(subPages[page], page, path.resolve(pagePath, page), resolvedStructure);
@@ -57,7 +56,7 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /\.(?:css|less)$/,
+				test: /\.less$/,
 				use: [
 					MiniCssExtractPlugin.loader,
 					{
@@ -69,6 +68,17 @@ module.exports = {
 					}, {
 						loader: 'less-loader',
 						options: {},
+					},
+				],
+			}, {
+				test: /\.min\.css$/,
+				use: [
+					MiniCssExtractPlugin.loader,
+					{
+						loader: 'css-loader',
+						options: {
+							url: false,
+						},
 					},
 				],
 			}, {
