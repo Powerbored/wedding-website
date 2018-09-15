@@ -55,40 +55,53 @@ main {
 }
 
 .countdown-timer {
-	@size: 2rem;
+	@timer-value-size: 1.3rem;
 
-	height: @size;
-
-	div, span {
-		width: @size;
-		height: @size;
-		font-size: @size;
-		line-height: 1;
-		font-weight: bold;
-	}
-
-	div {
-		display: inline-block;
-		position: relative;
-		background: @c-deep-grey;
-		overflow: hidden;
-
-		&.tens {
-			margin-left: 0.5rem;
-		}
-		&.ones {
-			margin-right: 0.5rem;
-		}
+	> span {
+		display: block;
+		color: @c-parchment;
+		padding: 0.1rem 0.5rem;
 
 		span {
-			display: block;
-			position: absolute;
-			top: 0;
-			background: hsl(16, 5%, 80%);
-			color: @c-deep-grey;
+			vertical-align: bottom;
+			display: inline-block;
+			padding: 0 0.5rem;
+			width: 40%;
+		}
 
-			&[role=presentation] {
-				user-select: none;
+		.value {
+			font-size: @timer-value-size;
+			font-weight: bold;
+			text-align: right;
+		}
+
+		.label {
+			font-size: @timer-value-size * 0.6;
+			text-align: left;
+		}
+
+		&[role=presentation] {
+			user-select: none;
+		}
+	}
+
+	@media (min-width: unit(@break-small, px)) {
+
+		> span {
+			display: inline-block;
+			padding: 0  0.5rem;
+
+			+ span {
+				border-left: solid 1px @c-parchment;
+			}
+			span {
+				display: inline-block;
+				padding: 0;
+				width: auto;
+			}
+			.value {
+				width: @timer-value-size * 1.5;
+				text-align: center;
 			}
 		}
 	}
