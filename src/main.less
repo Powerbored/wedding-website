@@ -1,23 +1,4 @@
-
-@block-padding: 1rem;
-
-@break-min: 320;
-@break-small: 480;
-@break-large: 1280;
-
-@base-font-size-min: 18;
-@base-font-size-max: 24;
-//@base-font-size-scaled: ~"calc("unit(@base-font-size-min, px) ~"+" (@base-font-size-max - @base-font-size-min) e(%("* ((100vw - %s) / %s - %s))", unit(@break-small, px), @break-large, @break-small));
-@base-font-size-scaled: %(~"calc(%s + %s * ((100vw - %s) / %s))", unit(@base-font-size-min, px), @base-font-size-max - @base-font-size-min, unit(@break-small, px), @break-large - @break-small);
-
-@c-deep-grey: hsl(240, 5%, 22%);
-@c-navy: hsl(216, 90%, 12%);
-@c-parchment: hsl(16, 5%, 80%);
-
-@c-background: @c-navy;
-@c-body-copy: @c-parchment;
-
-@headers: ah1, h2, h3, h4, h5, h6;
+@import (reference) './index.less';
 
 html {
 	background: darken(@c-background, 2%);
@@ -29,17 +10,19 @@ html {
 		font-size: unit(@base-font-size-min, px);
 	}
 	color: @c-body-copy;
+	padding: @block-padding;
 }
 
 body {
 	font-size: inherit;
 	color: inherit;
-	margin: @block-padding;
+	margin: 0 auto;
 	padding: @block-padding;
 	background: @c-background;
 	height: auto;
-	min-height: calc(100vh - @block-padding * 2);
+	min-height: 100%;
 	min-width: calc(unit(@break-min, px) - 2 * @block-padding);
+	max-width: unit(@break-large, px);
 	box-shadow:
 		0 0.1rem 0.5rem hsla(0, 0%, 0%, 0.5),
 		inset 0 0.1rem 0.5rem hsla(0, 0%, 100%, 0.1);
@@ -47,7 +30,7 @@ body {
 
 @{headers} {
 	margin: 1rem 0;
-	font-size: 1rem;
+	font-size: .px-to-rem(24px)[@rem];
 }
 
 main {
@@ -58,19 +41,22 @@ main {
 	@timer-value-size: 1.3rem;
 
 	> span {
-		display: block;
+		display: inline-block;
+		width: 40%;
+		min-width: 10rem;
 		color: @c-parchment;
-		padding: 0.1rem 0.5rem;
+		padding: 0.5rem;
 
 		span {
 			vertical-align: bottom;
 			display: inline-block;
-			padding: 0 0.5rem;
+			padding: 0 1rem;
 			width: 40%;
 		}
 
 		.value {
 			font-size: @timer-value-size;
+			border-right: 1px solid @c-parchment;
 			font-weight: bold;
 			text-align: right;
 		}
@@ -85,11 +71,11 @@ main {
 		}
 	}
 
-	@media (min-width: unit(@break-small, px)) {
-
+	@media (min-width: unit(@break-medium, px)) {
 		> span {
-			display: inline-block;
 			padding: 0  0.5rem;
+			width: auto;
+			min-width: auto;
 
 			+ span {
 				border-left: solid 1px @c-parchment;
@@ -102,6 +88,7 @@ main {
 			.value {
 				width: @timer-value-size * 1.5;
 				text-align: center;
+				border: none;
 			}
 		}
 	}

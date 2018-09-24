@@ -29,8 +29,9 @@ let
 
 module.exports = {
 	entry: {
-		site: path.resolve(__dirname, 'src/index.js'),
 		content: path.resolve(__dirname, 'src/content.js'),
+		site: path.resolve(__dirname, 'src/index.js'),
+		map: path.resolve(__dirname, 'src/components/map/index.js'),
 	},
 	plugins: [
 		...htmlPages,
@@ -88,7 +89,10 @@ module.exports = {
 						loader: 'handlebars-loader',
 						options: {
 							helperDirs: __dirname + '/src/helpers',
-							partialDirs: __dirname + '/src/templates',
+							partialDirs: [
+								__dirname + '/src/templates',
+								__dirname + '/src/components'
+							],
 							knownHelpersOnly: false,
 						},
 					},

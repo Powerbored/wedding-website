@@ -6,10 +6,6 @@ const
 require('moment-precise-range-plugin');
 
 export function init(targetElement, endTimeString, updateRate) {
-	// updateElement(targetElement, values.difference, values.time);
-	// window.update = function(diff) {
-	// 	updateElement(targetElement, diff, values.time);
-	// };
 	const values = evaluateDifferenceFromNow(endTimeString);
 	updateElement(targetElement, values.difference, values.time);
 	setInterval(() => {
@@ -38,6 +34,7 @@ function updateElement(targetElement, diff, time) {
 		${formatDays(diff, time)}
 		${formatHours(diff, time)}
 		${formatMinutes(diff, time)}
+		${formatSeconds(diff, time)}
 	`;
 }
 
@@ -54,19 +51,15 @@ function formatValuesAsHtml(label, value) {
 function formatSeconds(diff, time) {
 	return formatValuesAsHtml('second', diff.seconds, 1 - time.milliseconds()/1000, 60);
 }
-
 function formatMinutes(diff, time, value = diff.minutes) {
 	return formatValuesAsHtml('minute', value, diff.seconds/60 - time.milliseconds()/(1000 * 60));
 }
-
 function formatHours(diff, time, value = diff.hours) {
 	return formatValuesAsHtml('hour', value, diff.minutes/60 + diff.seconds/(60 * 60));
 }
-
 function formatDays(diff, time, value = diff.days) {
 	return formatValuesAsHtml('day', value, diff.hours/24 + diff.minutes/(60 * 24));
 }
-
 function formatMonths(diff, time, value = diff.months) {
 	return formatValuesAsHtml('month', value, diff.days/time.daysInMonth() + diff.hours/(24 * time.daysInMonth()));
 }

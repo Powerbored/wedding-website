@@ -1,8 +1,8 @@
 const
 	pages = {
 		home: {
-			title: 'Kirsty & Andrew',
-			body: 'This is the home page',
+			title: 'Andrew & Kirsty',
+			body: '',
 			template: 'src/index.hbs',
 		},
 		about: {

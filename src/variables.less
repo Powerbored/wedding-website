@@ -1,0 +1,20 @@
+@block-padding: 1rem;
+
+@break-min: 320;
+@break-small: 480;
+@break-medium: 768;
+@break-large: 1280;
+
+@base-font-size-min: 18;
+@base-font-size-max: 24;
+//@base-font-size-scaled: ~"calc("unit(@base-font-size-min, px) ~"+" (@base-font-size-max - @base-font-size-min) e(%("* ((100vw - %s) / %s - %s))", unit(@break-small, px), @break-large, @break-small));
+@base-font-size-scaled: %(~"calc(%s + %s * ((100vw - %s) / %s))", unit(@base-font-size-min, px), @base-font-size-max - @base-font-size-min, unit(@break-small, px), @break-large - @break-small);
+
+@c-deep-grey: hsl(240, 5%, 22%);
+@c-navy: hsl(216, 90%, 12%);
+@c-parchment: hsl(16, 5%, 80%);
+
+@c-background: @c-navy;
+@c-body-copy: @c-parchment;
+
+@headers: h1, h2, h3, h4, h5, h6;
