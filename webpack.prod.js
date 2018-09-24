@@ -6,6 +6,6 @@ const
 
 module.exports = merge(common, {
 	plugins: [
-		new CleanWebpackPlugin([path.resolve(__dirname, 'pages/*')]),
+		new CleanWebpackPlugin([path.resolve(__dirname, 'docs/*')]),
 	],
 });

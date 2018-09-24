@@ -21,7 +21,7 @@ let
 		}
 		return resolvedStructure;
 	},
-	htmlPages = resolveStructure(content.structure, 'home', 'pages').map(page => new HtmlWebpackPlugin({
+	htmlPages = resolveStructure(content.structure, 'home', 'docs').map(page => new HtmlWebpackPlugin({
 		filename: page.path,
 		template: path.resolve(__dirname, page.template),
 		ref: page.ref,
@@ -35,7 +35,7 @@ module.exports = {
 	},
 	output: {
 		filename: 'js/[name].js',
-		path: path.resolve(__dirname, 'pages'),
+		path: path.resolve(__dirname, 'docs'),
 	},
 	plugins: [
 		...htmlPages,
