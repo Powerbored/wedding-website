@@ -1,7 +1,7 @@
-const path = require('path'),
+const
+	path = require('path'),
 	HtmlWebpackPlugin = require('html-webpack-plugin'),
 	MiniCssExtractPlugin = require('mini-css-extract-plugin'),
-	CleanWebpackPlugin = require('clean-webpack-plugin'),
 	content = require('./src/content.js');
 
 let
@@ -33,27 +33,16 @@ module.exports = {
 		site: path.resolve(__dirname, 'src/index.js'),
 		map: path.resolve(__dirname, 'src/components/map/index.js'),
 	},
-	plugins: [
-		...htmlPages,
-		new HtmlWebpackPlugin({
-			filename: 'test.html',
-			template: path.resolve(__dirname, 'src/index.hbs'),
-			content: htmlPages,
-		}),
-		new MiniCssExtractPlugin({
-			filename: '[name].css'
-		}),
-		new CleanWebpackPlugin([path.resolve(__dirname, 'pages/*')]),
-	],
-	devServer: {
-		contentBase: [
-			path.resolve(__dirname, 'pages'),
-		],
-	},
 	output: {
-		filename: '[name].js',
+		filename: 'js/[name].js',
 		path: path.resolve(__dirname, 'pages'),
 	},
+	plugins: [
+		...htmlPages,
+		new MiniCssExtractPlugin({
+			filename: 'css/[name].css'
+		}),
+	],
 	module: {
 		rules: [
 			{
