@@ -21,17 +21,19 @@ let
 		}
 		return resolvedStructure;
 	},
-	htmlPages = resolveStructure(content.structure, 'home', 'docs').map(page => new HtmlWebpackPlugin({
-		filename: page.path,
-		template: path.resolve(__dirname, page.template),
-		ref: page.ref,
-	}));
+	htmlPages = resolveStructure(content.structure, 'home', 'docs')
+		.map(page => new HtmlWebpackPlugin({
+			filename: page.path,
+			template: path.resolve(__dirname, page.template),
+			ref: page.ref,
+		}));
 
 module.exports = {
 	entry: {
 		content: path.resolve(__dirname, 'src/content.js'),
 		site: path.resolve(__dirname, 'src/index.js'),
-		map: path.resolve(__dirname, 'src/components/map/index.js'),
+		countdown: path.resolve(__dirname, 'src/components/countdown-timer/index.js'),
+		// map: path.resolve(__dirname, 'src/components/map/index.js'),
 	},
 	output: {
 		filename: 'js/[name].js',

@@ -6,7 +6,10 @@
 	<main>
 		<h1>{{title}}</h1>
 		<p>{{body}}</p>
-		<div class="countdown-timer"></div>
+		{{> countdown-timer/countdown-timer}}
+		<script>
+			window.countdownDateTime = 'March 16, 2019 16:00:00';
+		</script>
 		{{!-- {{> map/map}} --}}
 	</main>
 {{/main}}
