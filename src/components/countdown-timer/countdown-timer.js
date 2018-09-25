@@ -49,7 +49,11 @@ function updateElements(targetElements, diff, time, previous) {
 function updateElement(targetElements, period, diff, previous) {
 	if (!previous || diff[period] !== previous[period]) {
 		targetElements[period].querySelector('.value').innerText = diff[period];
-		targetElements[period].querySelector('.label').innerText = diff[period] === 1 ? period.slice(0, -1) : period;
+		if (diff[period] === 1) {
+			targetElements[period].querySelector('.label').innerText = period.slice(0, -1);
+		} else if (diff[period] === 0) {
+			targetElements[period].querySelector('.label').innerText = period;
+		}
 		return true;
 	} else {
 		return false;
