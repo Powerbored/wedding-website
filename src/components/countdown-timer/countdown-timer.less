@@ -10,7 +10,7 @@
 		color: @c-parchment;
 		padding: 0.5rem;
 
-		span {
+		> span {
 			vertical-align: bottom;
 			display: inline-block;
 			padding: 0 1rem;
@@ -22,6 +22,18 @@
 			border-right: 1px solid @c-parchment;
 			font-weight: bold;
 			text-align: right;
+			height: @timer-value-size;
+			overflow: hidden;
+
+			.new, .old {
+				display: inline-block;
+				animation-duration: 1s;
+				animation-name: dropin;
+			}
+
+			.old {
+				user-select: none;
+			}
 		}
 
 		.label {
@@ -54,5 +66,14 @@
 				border: none;
 			}
 		}
+	}
+}
+
+@keyframes dropin {
+	from {
+		transform: translateY(-100%);
+	}
+	to {
+		transform: translateY(0%);
 	}
 }

@@ -15,7 +15,7 @@ function init(targetElement, endTimeString, updateRate) {
 			minutes: targetElement.querySelector('.minutes'),
 			seconds: targetElement.querySelector('.seconds'),
 		};
-	updateElements(targetElements, values.difference, values.time);
+	updateElements(targetElements, values.difference, values.time, null);
 	let previousDiff = Object.assign({}, values.difference);
 	setInterval(() => {
 		const values = evaluateDifferenceFromNow(endTimeString);
@@ -48,7 +48,16 @@ function updateElements(targetElements, diff, time, previous) {
 
 function updateElement(targetElements, period, diff, previous) {
 	if (!previous || diff[period] !== previous[period]) {
-		targetElements[period].querySelector('.value').innerText = diff[period];
+		if (!previous) {
+			targetElements[period].querySelector('.value').innerHTML = `
+				<span class="new">${diff[period]}</span>
+			`;
+		} else {
+			targetElements[period].querySelector('.value').innerHTML = `
+				<span class="new">${diff[period]}</span>
+				<span class="old" role="presentation">${previous[period]}</span>
+			`;
+		}
 		if (diff[period] === 1) {
 			targetElements[period].querySelector('.label').innerText = period.slice(0, -1);
 		} else if (diff[period] === 0) {
