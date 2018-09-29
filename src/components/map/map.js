@@ -54,7 +54,7 @@ function initMaps() {
 */
 		new google.maps.Marker({
 			position: tanglewood,
-			icon: 'heart.svg',
+			icon: 'assets/heart.svg',
 			map: map
 		});
 	};

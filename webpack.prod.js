@@ -8,8 +8,13 @@ const
 module.exports = merge(common, {
 	plugins: [
 		new CleanWebpackPlugin([path.resolve(__dirname, 'docs/*')]),
-		new CopyWebpackPlugin([{
-			from: 'CNAME',
-		}]),
+		new CopyWebpackPlugin([
+			{
+				from: 'CNAME',
+			}, {
+				from: 'src/assets',
+				to: 'assets',
+			}
+		]),
 	],
 });
