@@ -89,6 +89,9 @@ module.exports = {
 					},
 				],
 			}, {
+				test: /\.(?:svg)$/,
+				loader: 'raw-loader'
+			}, {
 				test: /\.(?:png|jpg)$/,
 				loader: 'file-loader'
 			},

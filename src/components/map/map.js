@@ -1,7 +1,8 @@
 const
 	apiKey = require('../../../keys.json').googlemaps,
 	// maps = require('@google/maps'),
-	theme = require('./map-theme.json');
+	theme = require('./map-theme.json'),
+	tanglewoodLogo = require('../../assets/tanglewood-estate.svg');
 
 function initMaps() {
 	const
@@ -32,31 +33,24 @@ function initMaps() {
 			directionsDisplay = new google.maps.DirectionsRenderer();
 
 		directionsDisplay.setMap(map);
-/*
-		directionsService.route({
-			origin: {lat: -38.311103, lng: 145.084773}, //new google.maps.LatLng(-38.285397, 145.070321),
-			destination: tanglewood,
-			travelMode: 'DRIVING',
-			waypoints: [
-				// {
-				// 	location: {lat: -38.311103, lng: 145.084773},
-				// },
-				{
-					location: {lat: -38.308701, lng: 145.064618},
-				}
-			],
-		},
-		function(result, status) {
-			if (status == 'OK') {
-				directionsDisplay.setDirections(result);
-			}
+		let
+			tanglewoodMarker = new google.maps.Marker({
+				position: tanglewood,
+				icon: 'assets/heart.svg',
+				title: 'Tanglewood Estate',
+				map: map
+			}),
+			tanglewoodInfoWindow = new google.maps.InfoWindow({
+				content: `<div id="tanglewoodInfoBox">${tanglewoodLogo}</div>`,
+			});
+
+		tanglewoodMarker.addListener('click', function() {
+			tanglewoodInfoWindow.open(map, tanglewoodMarker);
 		});
-*/
-		new google.maps.Marker({
-			position: tanglewood,
-			icon: 'assets/heart.svg',
-			map: map
-		});
+
+		if (window.innerWidth > 480) {
+			tanglewoodInfoWindow.open(map, tanglewoodMarker);
+		}
 	};
 
 	head.insertAdjacentElement('beforeend', mapsApi);
