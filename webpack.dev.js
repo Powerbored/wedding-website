@@ -6,7 +6,7 @@ const
 module.exports = merge(common, {
 	devServer: {
 		contentBase: [
-			path.resolve(__dirname, 'docs'),
+			path.resolve(__dirname, 'src', 'assets'),
 		],
 	},
 });

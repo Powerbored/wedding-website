@@ -33,7 +33,7 @@ module.exports = {
 		content: path.resolve(__dirname, 'src/content.js'),
 		site: path.resolve(__dirname, 'src/index.js'),
 		countdown: path.resolve(__dirname, 'src/components/countdown-timer/index.js'),
-		// map: path.resolve(__dirname, 'src/components/map/index.js'),
+		map: path.resolve(__dirname, 'src/components/map/index.js'),
 	},
 	output: {
 		filename: 'js/[name].js',
