@@ -59,9 +59,9 @@ function updateElement(targetElements, period, diff, previous) {
 			`;
 		}
 		if (diff[period] === 1) {
-			targetElements[period].querySelector('.label').innerText = period.slice(0, -1);
+			targetElements[period].querySelector('.s').setAttribute('role', 'presentation');
 		} else if (diff[period] === 0) {
-			targetElements[period].querySelector('.label').innerText = period;
+			targetElements[period].querySelector('.s').removeAttribute('role');
 		}
 		return true;
 	} else {

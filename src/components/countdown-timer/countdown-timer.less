@@ -14,7 +14,9 @@
 			vertical-align: bottom;
 			display: inline-block;
 			padding: 0 1rem;
-			width: 40%;
+			width: 50%;
+			overflow: hidden;
+			white-space: nowrap;
 		}
 
 		.value {
@@ -23,9 +25,11 @@
 			font-weight: bold;
 			text-align: right;
 			height: @timer-value-size;
-			overflow: hidden;
+			white-space: normal;
 
 			.new, .old {
+				line-height: 1;
+				width: 100%;
 				display: inline-block;
 				animation-duration: 1s;
 				animation-name: dropin;
@@ -39,11 +43,20 @@
 		.label {
 			font-size: @timer-value-size * 0.6;
 			text-align: left;
-		}
 
-		&[role=presentation] {
-			user-select: none;
+			.s {
+				transition: transform 1s;
+				display: inline-block;
+
+				&[role=presentation] {
+					transform: translateY(-100%);
+				}
+			}
 		}
+	}
+
+	span[role=presentation] {
+		user-select: none;
 	}
 
 	@media (min-width: unit(@break-medium, px)) {
