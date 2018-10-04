@@ -3,10 +3,15 @@
 {{copyObjectChildToNewContext content.pages htmlWebpackPlugin.options.ref this 'page'}}
 
 {{#> main page}}
+	<header>
+		<div class="title">
+			{{> importRawFile 'assets/kirsty-andrew.svg'}}
+		</div>
+	</header>
 	<main>
-		<h1>{{title}}</h1>
-		<p>{{body}}</p>
-		{{> countdown-timer/countdown-timer "March 16, 2019 16:00:00"}}
+		{{#if title}}<h1>{{title}}</h1>{{/if}}
+		{{#if body}}<p>{{body}}</p>{{/if}}
+		{{> countdown-timer/countdown-timer "2019-03-16T16:00:00+10:00"}}
 		{{> map/map}}
 	</main>
 {{/main}}

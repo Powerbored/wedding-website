@@ -82,7 +82,7 @@ module.exports = {
 							helperDirs: __dirname + '/src/helpers',
 							partialDirs: [
 								__dirname + '/src/templates',
-								__dirname + '/src/components'
+								__dirname + '/src/components',
 							],
 							knownHelpersOnly: false,
 						},

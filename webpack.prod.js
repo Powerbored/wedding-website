@@ -12,7 +12,7 @@ module.exports = merge(common, {
 			{
 				from: 'CNAME',
 			}, {
-				from: 'src/assets',
+				from: 'src/assets/',
 				to: 'assets',
 			}
 		]),

@@ -34,8 +34,48 @@
 		display: none;
 	}
 
-	#tanglewoodInfoBox svg {
-		width: 160px;
-		fill: @c-navy;
+	#tanglewoodInfoBox {
+		@padding: 0.5rem;
+		@font-size: 0.7rem;
+
+		color: @c-navy;
+
+		svg {
+			fill: @c-navy;
+			vertical-align: bottom;
+		}
+		.tanglewood-logo {
+			width: 8rem;
+			margin-bottom: @padding;
+		}
+		a {
+			color: inherit;
+			font-size: @font-size;
+			display: inline-block;
+			padding: @padding/2;
+
+			span {
+				line-height: 1rem;
+			}
+
+			&:hover, &:focus {
+				span {
+					text-decoration: underline;
+				}
+			}
+		}
+		ul {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+
+			li {
+				display: inline-block;
+
+				svg {
+					width: 1rem;
+				}
+			}
+		}
 	}
 }
