@@ -5,8 +5,8 @@
 @break-medium: 768;
 @break-large: 1280;
 
-@base-font-size-min: 18;
-@base-font-size-max: 24;
+@base-font-size-min: 16;
+@base-font-size-max: 20;
 //@base-font-size-scaled: ~"calc("unit(@base-font-size-min, px) ~"+" (@base-font-size-max - @base-font-size-min) e(%("* ((100vw - %s) / %s - %s))", unit(@break-small, px), @break-large, @break-small));
 @base-font-size-scaled: %(~"calc(%s + %s * ((100vw - %s) / %s))", unit(@base-font-size-min, px), @base-font-size-max - @base-font-size-min, unit(@break-small, px), @break-large - @break-small);
 
