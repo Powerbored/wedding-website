@@ -1,5 +1,5 @@
 // Check for a key in the keys file
-let keys = require('../../keys.json'); // webpack parses JSON for us
+let keys = require('../../keys/keys.json'); // webpack parses JSON for us
 module.exports = function(key) {
 	if (typeof key === 'string') {
 		if (keys && keys[key]) {

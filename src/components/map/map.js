@@ -1,5 +1,6 @@
+import { googleMaps_apiKey } from '../../../keys/keys.json';
+
 const
-	apiKey = require('../../../keys.json').googlemaps,
 	// maps = require('@google/maps'),
 	theme = require('./map-theme.json'),
 	icons = {
@@ -27,7 +28,7 @@ const
 	}
 ;
 
-function initMaps() {
+export function initMaps() {
 	const
 		head = document.getElementsByTagName('head')[0],
 		mapsApi = document.createElement('script'),
@@ -36,7 +37,7 @@ function initMaps() {
 
 	mapsApi.setAttribute('async', '');
 	mapsApi.setAttribute('defer', '');
-	mapsApi.setAttribute('src', `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=init`);
+	mapsApi.setAttribute('src', `https://maps.googleapis.com/maps/api/js?key=${googleMaps_apiKey}&callback=init`);
 
 	window.init = function() {
 		const
@@ -76,5 +77,3 @@ function initMaps() {
 
 	head.insertAdjacentElement('beforeend', mapsApi);
 }
-
-initMaps();

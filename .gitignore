@@ -157,5 +157,5 @@ typings/
 
 # End of https://www.gitignore.io/api/node,macos,grunt,intellij+all
 
-keys.json
 project-files/
+keys/
