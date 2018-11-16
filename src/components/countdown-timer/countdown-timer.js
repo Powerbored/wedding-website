@@ -36,14 +36,14 @@ function evaluateDifferenceFromNow(endTimeString) {
 }
 
 function updateElements(targetElements, diff, previous) {
-	updateElement(targetElements.seconds, 'seconds', diff.seconds, previous.seconds) &&
-	updateElement(targetElements.minutes, 'minutes', diff.minutes, previous.minutes) &&
-	updateElement(targetElements.hours,   'hours',   diff.hours,   previous.hours) &&
-	updateElement(targetElements.days,    'days',    diff.days,    previous.days) &&
-	updateElement(targetElements.months,  'months',  diff.months,  previous.months);
+	updateElement(targetElements.seconds, diff.seconds, previous.seconds) &&
+	updateElement(targetElements.minutes, diff.minutes, previous.minutes) &&
+	updateElement(targetElements.hours,   diff.hours,   previous.hours) &&
+	updateElement(targetElements.days,    diff.days,    previous.days) &&
+	updateElement(targetElements.months,  diff.months,  previous.months);
 }
 
-function updateElement(targetElement, period, diff, previous) {
+function updateElement(targetElement, diff, previous) {
 	if (!previous || diff !== previous) {
 		if (!previous) {
 			targetElement.querySelector('.value').innerHTML = `
