@@ -36,29 +36,29 @@ function evaluateDifferenceFromNow(endTimeString) {
 }
 
 function updateElements(targetElements, diff, previous) {
-	updateElement(targetElements, 'seconds', diff, previous) &&
-	updateElement(targetElements, 'minutes', diff, previous) &&
-	updateElement(targetElements, 'hours', diff, previous) &&
-	updateElement(targetElements, 'days', diff, previous) &&
-	updateElement(targetElements, 'months', diff, previous);
+	updateElement(targetElements.seconds, 'seconds', diff.seconds, previous.seconds) &&
+	updateElement(targetElements.minutes, 'minutes', diff.minutes, previous.minutes) &&
+	updateElement(targetElements.hours,   'hours',   diff.hours,   previous.hours) &&
+	updateElement(targetElements.days,    'days',    diff.days,    previous.days) &&
+	updateElement(targetElements.months,  'months',  diff.months,  previous.months);
 }
 
-function updateElement(targetElements, period, diff, previous) {
-	if (!previous || diff[period] !== previous[period]) {
+function updateElement(targetElement, period, diff, previous) {
+	if (!previous || diff !== previous) {
 		if (!previous) {
-			targetElements[period].querySelector('.value').innerHTML = `
-				<span class="new">${diff[period]}</span>
+			targetElement.querySelector('.value').innerHTML = `
+				<span class="new">${diff}</span>
 			`;
 		} else {
-			targetElements[period].querySelector('.value').innerHTML = `
-				<span class="new">${diff[period]}</span>
-				<span class="old" role="presentation">${previous[period]}</span>
+			targetElement.querySelector('.value').innerHTML = `
+				<span class="new">${diff}</span>
+				<span class="old" role="presentation">${previous}</span>
 			`;
 		}
-		if (diff[period] === 1) {
-			targetElements[period].querySelector('.s').setAttribute('role', 'presentation');
-		} else if (diff[period] === 0) {
-			targetElements[period].querySelector('.s').removeAttribute('role');
+		if (diff === 1) {
+			targetElement.querySelector('.s').setAttribute('role', 'presentation');
+		} else if (diff === 0) {
+			targetElement.querySelector('.s').removeAttribute('role');
 		}
 		return true;
 	} else {
