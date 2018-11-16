@@ -5,8 +5,9 @@ const
 
 require('moment-precise-range-plugin');
 
-function init(targetElement, endTimeString, updateRate) {
+function init(targetElement, updateRate) {
 	const
+		endTimeString = targetElement.getAttribute('data-target-time') || 'January 19, 2038 03:14:08',
 		values = evaluateDifferenceFromNow(endTimeString),
 		targetElements = {
 			months: targetElement.querySelector('.months'),
@@ -15,18 +16,14 @@ function init(targetElement, endTimeString, updateRate) {
 			minutes: targetElement.querySelector('.minutes'),
 			seconds: targetElement.querySelector('.seconds'),
 		};
-	updateElements(targetElements, values.difference, values.time, null);
+
+	updateElements(targetElements, values.difference, null);
 	let previousDiff = Object.assign({}, values.difference);
 	setInterval(() => {
 		const values = evaluateDifferenceFromNow(endTimeString);
-		updateElements(targetElements, values.difference, values.time, previousDiff);
+		updateElements(targetElements, values.difference, previousDiff);
 		previousDiff = Object.assign({}, values.difference);
 	}, Math.floor(1000/updateRate));
-	// function step() {
-	// 	updateElement(targetElement, endTimeString);
-	// 	window.requestAnimationFrame(step);
-	// }
-	// step();
 }
 
 function evaluateDifferenceFromNow(endTimeString) {
@@ -38,7 +35,7 @@ function evaluateDifferenceFromNow(endTimeString) {
 	return {time, endTime, difference};
 }
 
-function updateElements(targetElements, diff, time, previous) {
+function updateElements(targetElements, diff, previous) {
 	updateElement(targetElements, 'seconds', diff, previous) &&
 	updateElement(targetElements, 'minutes', diff, previous) &&
 	updateElement(targetElements, 'hours', diff, previous) &&
@@ -69,40 +66,4 @@ function updateElement(targetElements, period, diff, previous) {
 	}
 }
 
-// function updateElement(targetElement, diff, time) {
-// 	targetElement.innerHTML = `
-// 		${formatMonths(diff, time)}
-// 		${formatDays(diff, time)}
-// 		${formatHours(diff, time)}
-// 		${formatMinutes(diff, time)}
-// 		${formatSeconds(diff, time)}
-// 	`;
-// }
-
-function formatValuesAsHtml(label, value) {
-	const s = value === 1 ? '' : 's';
-	return `
-		<span class="${label}">
-			<span class="value">${value}</span>
-			<span class="label">${label}${s}</span>
-		</span>
-	`;
-}
-
-function formatSeconds(diff, time) {
-	return formatValuesAsHtml('second', diff.seconds, 1 - time.milliseconds()/1000, 60);
-}
-function formatMinutes(diff, time, value = diff.minutes) {
-	return formatValuesAsHtml('minute', value, diff.seconds/60 - time.milliseconds()/(1000 * 60));
-}
-function formatHours(diff, time, value = diff.hours) {
-	return formatValuesAsHtml('hour', value, diff.minutes/60 + diff.seconds/(60 * 60));
-}
-function formatDays(diff, time, value = diff.days) {
-	return formatValuesAsHtml('day', value, diff.hours/24 + diff.minutes/(60 * 24));
-}
-function formatMonths(diff, time, value = diff.months) {
-	return formatValuesAsHtml('month', value, diff.days/time.daysInMonth() + diff.hours/(24 * time.daysInMonth()));
-}
-
-init(document.querySelector('.countdown-timer'), window.countdownDateTime || 'January 19, 2038 03:14:08', 1);
+init(document.querySelector('.countdown-timer'), 1);
