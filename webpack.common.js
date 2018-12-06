@@ -1,10 +1,12 @@
 const
+	evalConstantExports = require('./src/modules/evalConstantExports'),
+	content = evalConstantExports('./src/content.js').content,
 	path = require('path'),
 	HtmlWebpackPlugin = require('html-webpack-plugin'),
 	MiniCssExtractPlugin = require('mini-css-extract-plugin'),
-	content = require('./src/content.js');
-
-let
+	entries = {
+		site: path.resolve(__dirname, 'src/index.js'),
+	},
 	resolveStructure = function(structure, name, pagePath, resolvedStructure = []) {
 		if (structure.index) {
 			resolvedStructure.push({
@@ -22,19 +24,33 @@ let
 		return resolvedStructure;
 	},
 	htmlPages = resolveStructure(content.structure, 'home', 'docs')
-		.map(page => new HtmlWebpackPlugin({
-			filename: page.path,
-			template: path.resolve(__dirname, page.template),
-			ref: page.ref,
-		}));
+		.map(page => {
+			const pluginData = {};
+			if (page.path && page.ref) {
+				pluginData.filename = page.path;
+				pluginData.ref = page.ref;
+				pluginData.template = path.resolve(__dirname, page.template.name) || './src/index.hbs';
+				if (page.template && page.template.components) {
+					pluginData.chunks = [
+						...Object.keys(entries),
+						...page.template.components.map(component => component.chunk)
+					];
+				}
+				console.log(pluginData);
+				return new HtmlWebpackPlugin(pluginData);
+			} else {
+				return;
+			}
+		}),
+	components = Object.keys(content.components)
+		.reduce((acc, key) => {
+			let component = content.components[key]
+			acc[component.chunk] = path.resolve(__dirname, component.resource);
+			return acc;
+		}, {});
 
 module.exports = {
-	entry: {
-		content: path.resolve(__dirname, 'src/content.js'),
-		site: path.resolve(__dirname, 'src/index.js'),
-		countdown: path.resolve(__dirname, 'src/components/countdown-timer/index.js'),
-		map: path.resolve(__dirname, 'src/components/map/index.js'),
-	},
+	entry: Object.assign(entries, components),
 	output: {
 		filename: 'js/[name].js',
 		path: path.resolve(__dirname, 'docs'),
