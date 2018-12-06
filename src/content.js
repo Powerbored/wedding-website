@@ -1,24 +1,53 @@
 const
+	components = {
+		countdown: {
+			chunk: 'countdown',
+			resource: 'src/components/countdown-timer/index.js'
+		},
+		map: {
+			chunk: 'map',
+			resource: 'src/components/map/index.js'
+		},
+		cognitoRegister: {
+			chunk: 'cognito-register',
+			resource: 'src/components/cognito/register.js'
+		}
+	},
+	templates = {
+		index: {
+			name: 'src/index.hbs',
+			components: [
+				components.countdown,
+				components.map
+			]
+		},
+		rsvp: {
+			name: 'src/rsvp.hbs',
+			components: [
+				components.cognitoRegister
+			]
+		}
+	},
 	pages = {
 		home: {
 			title: '',
+			template: templates.index,
 			body: 'are getting married',
-			template: 'src/index.hbs',
 		},
 		about: {
 			title: 'About',
+			template: templates.index,
 			body: 'This is the about page',
-			template: 'src/index.hbs',
 		},
-		news: {
-			title: 'News',
-			body: 'The latest news',
-			template: 'src/index.hbs',
+		rsvp: {
+			title: 'RSVP',
+			template: templates.rsvp,
+			body: 'RSVP here',
 		},
 		author: {
 			title: 'Powerbored',
+			template: templates.index,
 			body: 'Authored by Powerbored',
-			template: 'src/index.hbs',
 		},
 	},
 	structure = {
@@ -32,13 +61,15 @@ const
 					},
 				},
 			},
-			news: {
-				index: pages.news,
+			rsvp: {
+				index: pages.rsvp,
 			},
 		},
 	};
 
-module.exports = {
+export const content = {
 	pages,
 	structure,
+	templates,
+	components,
 };
