@@ -17,7 +17,7 @@ function init(targetElement, updateRate) {
 			seconds: targetElement.querySelector('.seconds'),
 		};
 
-	updateElements(targetElements, values.difference, null);
+	updateElements(targetElements, values.difference, {});
 	let previousDiff = Object.assign({}, values.difference);
 	setInterval(() => {
 		const values = evaluateDifferenceFromNow(endTimeString);
@@ -44,17 +44,12 @@ function updateElements(targetElements, diff, previous) {
 }
 
 function updateElement(targetElement, diff, previous) {
+	let oldNumber = `<span class="old" role="presentation">${previous}</span>`;
 	if (!previous || diff !== previous) {
-		if (!previous) {
-			targetElement.querySelector('.value').innerHTML = `
-				<span class="new">${diff}</span>
-			`;
-		} else {
-			targetElement.querySelector('.value').innerHTML = `
-				<span class="new">${diff}</span>
-				<span class="old" role="presentation">${previous}</span>
-			`;
-		}
+		targetElement.querySelector('.value').innerHTML = `
+			<span class="new">${diff}</span>
+			${isNaN(previous) ? '' : oldNumber}
+		`;
 		if (diff === 1) {
 			targetElement.querySelector('.s').setAttribute('role', 'presentation');
 		} else if (diff === 0) {
