@@ -1,0 +1,37 @@
+@import (reference) '../../variables.less';
+
+.expanding-box {
+	height: 0;
+	transition: height @td-size ease-in-out;
+	overflow: hidden;
+	border-radius: 2px;
+	margin: 0;
+
+	> div {
+		background-color: @c-navy;
+		transition: background-color @td-colour ease-in-out;
+
+		&[data-message-type="error"] {
+			background-color: @c-red;
+		}
+
+		&[data-message-type="warn"] {
+			background-color: @c-yellow;
+		}
+
+		&[data-message-type="success"] {
+			background-color: @c-green;
+		}
+	}
+
+	&[data-expanded="false"] {
+		* {
+			display: none !important;
+		}
+	}
+}
+
+.message {
+	display: block;
+	padding: 1em;
+}
