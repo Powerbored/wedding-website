@@ -1,4 +1,4 @@
-@import (reference) './index.less';
+@import './index.less';
 
 html {
 	background: darken(@c-background, 2%);
@@ -48,4 +48,93 @@ header {
 
 main {
 	text-align: center;
+}
+
+
+form {
+	max-width: 20rem;
+	margin: 0 auto;
+}
+
+@{form-elements} {
+	margin: @focus-indicator-size;
+	margin-top: 0.5rem;
+}
+
+label, input {
+	display: block;
+}
+
+input {
+	width: calc(100% - @focus-indicator-size * 2);
+	background: none;
+	padding: 0.5em 0 0.2em;
+	border: none;
+	border-bottom: 1px solid @c-body-copy;
+	color: @c-body-copy;
+	text-align: center;
+
+	&[disabled] {
+		color: #666;
+	}
+}
+
+button {
+	color: @c-light-blue;
+	position: relative;
+	border: none;
+	font-style: oblique;
+	background: none;
+
+	&[type="submit"] {
+		color: @c-body-copy;
+		padding: 1em;
+		border: 2px dashed;
+		font-size: 1.3rem;
+		background-color: #fff0;
+		transition: background-color @td-colour;
+
+		span {
+			.f-display;
+
+			&:after {
+				background: @c-body-copy;
+			}
+		}
+
+		&:hover, &:focus {
+			background-color: #fff2;
+		}
+
+		&[disabled] {
+			background-color: #999;
+		}
+	}
+
+	span {
+		&:after {
+			display: block;
+			content: "";
+			background: @c-light-blue;
+			height: 1px;
+			transition: transform @td-effect;
+			transform: scaleX(0);
+		}
+	}
+
+	&:hover, &:focus {
+		span:after {
+			transform: scaleX(1);
+		}
+	}
+
+	&[disabled] {
+		color: #666;
+
+		&:hover, &:focus {
+			span:after {
+				transform: scaleX(0);
+			}
+		}
+	}
 }

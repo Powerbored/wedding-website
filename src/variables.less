@@ -5,16 +5,34 @@
 @break-medium: 768;
 @break-large: 1280;
 
+@focus-indicator-size: 4px;
+
 @base-font-size-min: 16;
 @base-font-size-max: 20;
-//@base-font-size-scaled: ~"calc("unit(@base-font-size-min, px) ~"+" (@base-font-size-max - @base-font-size-min) e(%("* ((100vw - %s) / %s - %s))", unit(@break-small, px), @break-large, @break-small));
 @base-font-size-scaled: %(~"calc(%s + %s * ((100vw - %s) / %s))", unit(@base-font-size-min, px), @base-font-size-max - @base-font-size-min, unit(@break-small, px), @break-large - @break-small);
 
 @c-deep-grey: hsl(240, 5%, 22%);
 @c-navy: hsl(216, 90%, 12%);
 @c-parchment: hsl(16, 5%, 80%);
+@c-red: hsl(4, 70%, 40%);
+@c-yellow: hsl(35, 90%, 35%);
+@c-green: hsl(130, 50%, 30%);
+@c-light-blue: hsl(224, 90%, 70%);
 
 @c-background: @c-navy;
 @c-body-copy: @c-parchment;
 
+.f-display {
+	display: inline-block;
+	font-family: 'Pacifico', cursive;
+	line-height: 1;
+	margin-top: -0.3em;
+	font-style: normal;
+}
+
 @headers: h1, h2, h3, h4, h5, h6;
+@form-elements: label, input, button;
+
+@td-colour: 0.2s;
+@td-effect: 0.3s;
+@td-size: 0.5s;
