@@ -1,17 +1,14 @@
 // Given the context, add content from a specified js module
-const
-	fs = require('fs'),
-	path = require('path'),
-	rootPath = 'src/';
-module.exports = function(jsFile, context, content = 'content') {
-	let jsContent = eval(`(function () {
-		${fs.readFileSync(path.resolve(rootPath, jsFile)).toString()}
-		return module.exports;
-	})()`);
+const evalConstantExports = require('../modules/evalConstantExports');
+
+module.exports = function(jsFile, content = 'content') {
+	const context = arguments[arguments.length - 1];
+	// return Object.keys(context.data);
 	content = typeof content === 'string' ? content : 'content';
+	let jsContent = evalConstantExports(jsFile)[content];
 	if (jsContent) {
-		if (context) {
-			context[content] = Object.assign(context[content] || {}, jsContent);
+		if (context.data.root) {
+			context.data.root[content] = Object.assign(context.data.root[content] || {}, jsContent);
 			return;
 		} else {
 			throw new Error('Could not acceess context');
