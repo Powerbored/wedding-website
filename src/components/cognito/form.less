@@ -1,14 +1,8 @@
-@import (reference) '../../variables.less';
+@import (reference) '../../index.less';
 
 .expanding-box {
-	height: 0;
-	transition: height @td-size ease-in-out;
-	overflow: hidden;
-	border-radius: 2px;
-	margin: 0;
-
 	> div {
-		background-color: @c-navy;
+		background-color: inherit;
 		transition: background-color @td-colour ease-in-out;
 
 		&[data-message-type="error"] {
@@ -21,12 +15,6 @@
 
 		&[data-message-type="success"] {
 			background-color: @c-green;
-		}
-	}
-
-	&[data-expanded="false"] {
-		* {
-			display: none !important;
 		}
 	}
 }

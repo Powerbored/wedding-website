@@ -10,7 +10,7 @@ const
 		},
 		cognitoRegister: {
 			chunk: 'cognito-register',
-			resource: 'src/components/cognito/register.js'
+			resource: 'src/components/cognito/index.js'
 		}
 	},
 	templates = {

@@ -1,38 +1,28 @@
 <form id="cognitoRegistration">
 	<h2>Sign In</h2>
-	<div id="messageBox" role="alert" aria-live="assertive" class="expanding-box" data-expanded="false" data-message-type="error">
-		<div>
-			<span id="registrationMessage" class="message"></span>
-		</div>
+	<div role="alert" aria-live="assertive">
+		{{#> expanding-box/expanding-box id="messageBox" expanded=false}}
+			<span id="message" class="message">Test</span>
+		{{/expanding-box/expanding-box}}
 	</div>
-	<label for="emailInputRegister">Email</label>
-	<input type="email" id="emailInputRegister" pattern=".*@.*" required>
-	<div id="password1Box" class="expanding-box" data-expanded="true" style="height: auto">
-		<div>
-			<label for="password1InputRegister">Password</label>
-			<input type="password" id="password1InputRegister" pattern=".*" required>
-		</div>
-	</div>
-	<div id="password2Box" class="expanding-box" data-expanded="false">
-		<div>
-			<label for="password2InputRegister">Confirm Password</label>
-			<input type="password" id="password2InputRegister" pattern=".*">
-		</div>
-	</div>
-	<div id="verifyBox" class="expanding-box" data-expanded="false">
-		<div>
-			<label for="verifyRegister">Verification Code</label>
-			<input type="text" id="verifyRegister" pattern=".*">
-		</div>
-	</div>
+	<label for="emailInput">Email</label>
+	<input type="email" id="emailInput" pattern=".*@.*" required>
+	{{#> expanding-box/expanding-box id="passwordBox" expanded=true}}
+		<label for="passwordInput">Password</label>
+		<input type="password" id="passwordInput" pattern=".*" required>
+	{{/expanding-box/expanding-box}}
+	{{#> expanding-box/expanding-box id="passwordConfirmBox" expanded=false}}
+		<label for="passwordConfirmInput">Confirm Password</label>
+		<input type="password" id="passwordConfirmInput" pattern=".*">
+	{{/expanding-box/expanding-box}}
+	{{#> expanding-box/expanding-box id="verifyBox" expanded=false}}
+		<label for="verifyCodeInput">Verification Code</label>
+		<input type="text" id="verifyCodeInput" pattern=".*">
+		<button type="button" id="resendEmailButton">
+			<span>Resend verification email</span>
+		</button>
+	{{/expanding-box/expanding-box}}
 	<button type="submit" id="submitButton">
 		<span>Sign in</span>
 	</button>
-	<div id="resendBox" class="expanding-box" data-expanded="false">
-		<div>
-			<button id="resendEmail">
-				<span>Resend verification email</span>
-			</button>
-		</div>
-	</div>
 </form>
