@@ -1,0 +1,16 @@
+@import (reference) '../../variables.less';
+
+.expanding-box {
+	transition: height @td-size ease-in-out;
+	overflow: hidden;
+	border-radius: 2px;
+	margin: 0;
+
+	&[data-expanded="false"] {
+		height: 0;
+
+		* {
+			display: none !important;
+		}
+	}
+}
