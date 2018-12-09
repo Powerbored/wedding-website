@@ -1,5 +1,5 @@
 
-import {createCognitoUserPool, registerCognitoUser, verifyCognitoUser, createCognitoUser, signIn, signOut, signUpStatus, authToken} from '../../modules/cognitoAuth';
+import {createCognitoUserPool, registerCognitoUser, verifyCognitoUser, createCognitoUser, signIn} from '../../modules/cognitoAuth';
 import {awsCognito_poolId, awsCognito_appClient} from '../../../keys/keys.json';
 import {ExpandingBox} from '../expanding-box/expanding-box.js';
 import '../expanding-box/expanding-box.less';
@@ -121,7 +121,7 @@ import './form.less';
 				break;
 			default:
 				updateMessage('error', response.message);
-				console.info(response);
+				// console.info(response);
 				break;
 			}
 		},
@@ -189,8 +189,7 @@ import './form.less';
 				}
 			);
 		},
-		loginSuccess = function(result) {
-			console.log(result);
+		loginSuccess = function() {
 			updateMessage('success', 'Successfully signed in.\nRedirecting to RSVP page.');
 			load('/rsvp');
 		},
@@ -223,7 +222,7 @@ import './form.less';
 				data.code,
 				data.password,
 				{
-					onSuccess: (result) => {
+					onSuccess: () => {
 						updateMessage('success', 'Password successfully changed.\nPlease sign in below');
 						setElementsDisabled(Object.values(form.input), false);
 						state.login.init();
@@ -267,7 +266,6 @@ import './form.less';
 					data.email,
 					data.password,
 					result => {
-						console.log(result.user);
 						resendEmailSuccess(result.user.username, 'registration');
 						userData.setUser(data.email);
 						state.verify.init();
@@ -292,7 +290,7 @@ import './form.less';
 			verifyCognitoUser(
 				userData.setUser(email),
 				code,
-				result => {
+				() => {
 					updateMessage('success',
 						`${email} verified successfully.
 						Please sign in to continue.`
@@ -315,7 +313,7 @@ import './form.less';
 			const activeUser = userData.currentUser;
 			if (activeUser) {
 				activeUser.resendConfirmationCode(
-					(error, result) => {
+					(error) => {
 						if (error) {
 							responseSanitiser(error);
 							setElementsDisabled([form.input.support], false);
@@ -334,20 +332,6 @@ import './form.less';
 				`A verification code has been sent${username ? ' to ' + username : ''}.
 				Please enter the verification code below${action ? ' to complete ' + action : ''}.`
 			);
-		},
-		checkAuth = function() {
-			authToken(userData.userPool).then(function setAuthToken(token) {
-				if (token) {
-					console.log(token);
-				} else {
-					console.log('nope');
-				}
-			}).catch(function handleTokenError(error) {
-				console.error(error);
-			});
-		},
-		logOut = function() {
-			signOut(userData.userPool);
 		},
 		state = {};
 
@@ -399,12 +383,5 @@ import './form.less';
 		text: 'Re-send verification email',
 		event: resendPasswordChangeEmailEvent
 	});
-	state.current = state.login;
 	state.login.init();
-
-	window.form = form;
-	window.userData = userData;
-	window.logout = logOut;
-	window.state = state;
-	window.checkAuth = checkAuth;
 }(window));
