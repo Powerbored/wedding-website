@@ -8,9 +8,9 @@ const
 			chunk: 'map',
 			resource: 'src/components/map/index.js'
 		},
-		cognitoRegister: {
-			chunk: 'cognito-register',
-			resource: 'src/components/cognito/index.js'
+		cognitoLogin: {
+			chunk: 'cognito-login',
+			resource: 'src/components/cognito/login.js'
 		}
 	},
 	templates = {
@@ -21,16 +21,16 @@ const
 				components.map
 			]
 		},
-		rsvp: {
-			name: 'src/rsvp.hbs',
+		login: {
+			name: 'src/login.hbs',
 			components: [
-				components.cognitoRegister
+				components.cognitoLogin
 			]
 		}
 	},
 	pages = {
 		home: {
-			title: '',
+			title: 'Andrew and Kirsty',
 			template: templates.index,
 			body: 'are getting married',
 		},
@@ -39,9 +39,14 @@ const
 			template: templates.index,
 			body: 'This is the about page',
 		},
+		login: {
+			title: 'Sign in',
+			template: templates.login,
+			body: 'Sign in or register to RSVP',
+		},
 		rsvp: {
 			title: 'RSVP',
-			template: templates.rsvp,
+			template: templates.login,
 			body: 'RSVP here',
 		},
 		author: {
@@ -64,6 +69,9 @@ const
 			rsvp: {
 				index: pages.rsvp,
 			},
+			login: {
+				index: pages.login
+			}
 		},
 	};
 
