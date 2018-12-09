@@ -7,27 +7,36 @@ import './form.less';
 
 (function(window){
 	class State {
-		constructor(requiredElements, requiredBoxes, event, action) {
+		constructor(requiredElements, requiredBoxes, submit, support) {
+			const thisState = this;
 			this.requiredElements = requiredElements;
 			this.requiredBoxes = requiredBoxes;
-			this.event = event;
-			this.action = action;
+			this.submit = submit;
+			this.support = support;
 			this.init = function () {
 				if (state.current) {
 					state.current.uninit(requiredBoxes);
 				}
-				state.current = this;
+				state.current = thisState;
 				setElementsRequired(requiredElements, true);
 				requiredBoxes.forEach(box => box.expanded ? null : box.expand());
-				form.group.addEventListener('submit', event);
+				form.group.addEventListener('submit', submit.event);
+				form.input.submit.firstElementChild.innerText = submit.text;
+				if (support) {
+					form.input.support.addEventListener('click', support.event);
+					form.input.support.firstElementChild.innerText = support.text;
+				}
 			};
 			this.uninit = function (retainBoxes) {
 				const collapseBoxes = requiredBoxes.filter(item => retainBoxes.indexOf(item) < 0);
-				console.log(requiredBoxes, retainBoxes, collapseBoxes);
-				state.current = null;
 				setElementsRequired(requiredElements, false);
 				collapseBoxes.forEach(box => box.collapse());
-				form.group.removeEventListener('submit', event);
+				form.group.removeEventListener('submit', state.current.submit.event);
+				if (state.current.support) {
+					form.input.support.removeEventListener('click', state.current.support.event);
+				}
+				setElementsDisabled([form.input.support], false);
+				state.current = null;
 			};
 		}
 	}
@@ -41,13 +50,14 @@ import './form.less';
 				passwordConfirm: window.passwordConfirmInput,
 				verifyCode: window.verifyCodeInput,
 				submit: window.submitButton,
-				resendEmail: window.resendEmailButton,
+				support: window.supportButton
 			},
 			box: {
 				message: new ExpandingBox(window.messageBox),
 				password: new ExpandingBox(window.passwordBox),
 				passwordConfirm: new ExpandingBox(window.passwordConfirmBox),
 				verify: new ExpandingBox(window.verifyBox),
+				support: new ExpandingBox(window.supportBox)
 			},
 		},
 		userData = {
@@ -78,17 +88,40 @@ import './form.less';
 				}
 			}
 		},
-		responseSanitiser = function(response, data) {
+		responseSanitiser = function(response, data = {}) {
+			let noUser = data.email ? data.email + ' is not yet registered' : 'User not registered';
 			switch (response.code) {
+			case 'UserNotFoundException':
+				updateMessage('warn',
+					`${noUser}.
+					Please complete user registration below.`
+				);
+				state.register.init();
+				break;
 			case 'UsernameExistsException':
-				loginAction(data.email, data.password);
+				if (data.email && data.password) {
+					loginAction(data.email, data.password);
+				} else {
+					updateMessage('error', 'The email requested is already in use.');
+				}
 				break;
 			case 'UserNotConfirmedException':
 				updateMessage('warn', `${data.email} already registered, but is not verified.`);
-				initVerify();
+				state.verify.init();
+				break;
+			case 'InvalidParameterException':
+				updateMessage('error', 'Password must be at least 8 characters long and contain an uppercase letter and a number.');
+				break;
+			case 'LimitExceededException':
+				updateMessage('error', 'Attempt limit exceeded.\nFor your security, please wait a while before trying again.');
+				break;
+			case 'NotAuthorizedException':
+				updateMessage('error', response.message);
+				promptForgotPassword();
 				break;
 			default:
 				updateMessage('error', response.message);
+				console.info(response);
 				break;
 			}
 		},
@@ -130,31 +163,94 @@ import './form.less';
 				}
 			});
 		},
+		load = function(location) {
+			setTimeout(() => {
+				if (location) {
+					window.location.href = location;
+				} else {
+					window.location.reload();
+				}
+			}, 3000);
+		},
 		loginEvent = function(event) {
-			const data = {
-				email: form.input.email.value,
-				password: form.input.password.value,
-			};
 			event.preventDefault();
-			setElementsDisabled(Object.values(form.input), true);
-			loginAction(data.email, data.password);
+			loginAction(form.input.email.value, form.input.password.value);
 		},
 		loginAction = function(email, password) {
+			setElementsDisabled(Object.values(form.input), true);
 			signIn(
 				userData.setUser(email),
 				email,
 				password,
 				result => loginSuccess(result),
-				error => responseSanitiser(error, {email, password})
+				error => {
+					responseSanitiser(error, {email, password});
+					setElementsDisabled(Object.values(form.input), false);
+				}
 			);
 		},
 		loginSuccess = function(result) {
 			console.log(result);
-			updateMessage('success', 'Successfully signed in.\nRedirecting to RSVP page');
-			// setTimeout(() => window.location.href = '/', 4000);
+			updateMessage('success', 'Successfully signed in.\nRedirecting to RSVP page.');
+			load('/rsvp');
 		},
-		initRegister = function() {
-			form.group.addEventListener('submit', registerEvent);
+		promptForgotPassword = function() {
+			if (state.current.support) {
+				form.input.support.removeEventListener('click', state.current.support.event);
+			}
+			state.current.support = {
+				text: 'Forgot password?',
+				event: forgotPasswordEvent
+			};
+			form.input.support.firstElementChild.innerText = state.current.support.text;
+			form.input.support.addEventListener('click', state.current.support.event);
+		},
+		forgotPasswordEvent = function(event) {
+			event.preventDefault();
+			state.changePassword.init();
+			resendPasswordChangeEmailEvent();
+		},
+		passwordChangeEvent = function() {
+			const data = {
+				email: form.input.email.value,
+				password: form.input.password.value,
+				code: form.input.verifyCode.value
+			};
+			event.preventDefault();
+			setElementsDisabled(Object.values(form.input), true);
+
+			userData.setUser(data.email).confirmPassword(
+				data.code,
+				data.password,
+				{
+					onSuccess: (result) => {
+						updateMessage('success', 'Password successfully changed.\nPlease sign in below');
+						setElementsDisabled(Object.values(form.input), false);
+						state.login.init();
+					},
+					onFailure: (error) => {
+						responseSanitiser(error);
+						setElementsDisabled(Object.values(form.input), false);
+					}
+				}
+			);
+		},
+		resendPasswordChangeEmailEvent = function() {
+			const activeUser = userData.currentUser;
+
+			setElementsDisabled(Object.values(form.input), true);
+			activeUser.forgotPassword(
+				{
+					onSuccess: () => {
+						resendEmailSuccess(activeUser.username, 'password change');
+						setElementsDisabled(Object.values(form.input), false);
+					},
+					onFailure: (error) => {
+						responseSanitiser(error);
+						setElementsDisabled(Object.values(form.input), false);
+					}
+				}
+			);
 		},
 		registerEvent = function(event) {
 			const data = {
@@ -163,7 +259,7 @@ import './form.less';
 				passwordConfirm: form.input.passwordConfirm.value
 			};
 			event.preventDefault();
-			setElementsDisabled(Object.values(form), true);
+			setElementsDisabled(Object.values(form.input), true);
 
 			if (data.password === data.passwordConfirm) {
 				registerCognitoUser(
@@ -172,74 +268,72 @@ import './form.less';
 					data.password,
 					result => {
 						console.log(result.user);
-						updateMessage(
-							'success',
-							`A verification code has been sent to ${result.user.username}\n
-							Please enter the verification code below to complete registration.`
-						);
-						initVerify();
-						setElementsDisabled(Object.values(form), false);
+						resendEmailSuccess(result.user.username, 'registration');
+						userData.setUser(data.email);
+						state.verify.init();
+						setElementsDisabled(Object.values(form.input), false);
 					},
 					error => {
 						responseSanitiser(error, data);
-						setElementsDisabled(Object.values(form), false);
+						setElementsDisabled(Object.values(form.input), false);
 					}
 				);
 			} else {
 				updateMessage('error', 'Passwords do not match.');
-				setElementsDisabled(Object.values(form), false);
+				setElementsDisabled(Object.values(form.input), false);
 			}
 		},
-		initVerify = function() {
-			form.group.removeEventListener('submit', registerEvent);
-			form.verifyBox.expand();
-			setElementsRequired([form.verify], true);
-			form.passwordBox.collapse();
-			setElementsRequired([form.password1Field, form.password2Field], false);
-			form.submitButton.firstElementChild.innerText = 'Verify';
-			form.group.addEventListener('submit', verifyEvent);
-			form.resendEmail.addEventListener('click', resendEmailEvent);
-		},
 		verifyEvent = function(event) {
-			const data = {
-				email: form.emailField.value,
-				code: form.verify.value
-			};
 			event.preventDefault();
-			setElementsDisabled(Object.values(form), true);
+			verifyAction(form.input.email.value, form.input.verifyCode.value);
+		},
+		verifyAction = function(email, code) {
+			setElementsDisabled(Object.values(form.input), true);
 			verifyCognitoUser(
-				userData.setUser(data.email),
-				data.code,
+				userData.setUser(email),
+				code,
 				result => {
-					updateMessage(
-						'success',
-						`${result.user.username} verified successfully.`
+					updateMessage('success',
+						`${email} verified successfully.
+						Please sign in to continue.`
 					);
-					setElementsDisabled(Object.values(form), false);
+					setElementsDisabled(Object.values(form.input), false);
+					state.login.init();
 				},
 				error => {
-					responseSanitiser(error, data);
-					setElementsDisabled(Object.values(form), false);
+					responseSanitiser(error, {email, code});
+					setElementsDisabled(Object.values(form.input), false);
 				}
 			);
 		},
-		resendEmailEvent = function(event) {
+		resendVerifyEmailEvent = function(event) {
 			event.preventDefault();
-			setElementsDisabled([form.resendEmail], true);
-			if (userData.currentUser) {
-				userData.currentUser.resendConfirmationCode(
-					(err, result) => {
-						updateMessage(
-							'success',
-							`A verification code has been sent to ${userData.currentUser.username}\n
-							Please enter the verification code below to complete registration.`
-						);
+			setElementsDisabled([form.input.support], true);
+			resendEmailAction();
+		},
+		resendEmailAction = function() {
+			const activeUser = userData.currentUser;
+			if (activeUser) {
+				activeUser.resendConfirmationCode(
+					(error, result) => {
+						if (error) {
+							responseSanitiser(error);
+							setElementsDisabled([form.input.support], false);
+						} else {
+							resendEmailSuccess(activeUser.username, 'registration');
+						}
 					}
 				);
 			} else {
 				updateMessage('error', 'Current username is invalid, resetting form');
-				// reset form..?
+				load();
 			}
+		},
+		resendEmailSuccess = function(username, action) {
+			updateMessage('success',
+				`A verification code has been sent${username ? ' to ' + username : ''}.
+				Please enter the verification code below${action ? ' to complete ' + action : ''}.`
+			);
 		},
 		checkAuth = function() {
 			authToken(userData.userPool).then(function setAuthToken(token) {
@@ -255,125 +349,62 @@ import './form.less';
 		logOut = function() {
 			signOut(userData.userPool);
 		},
-		state = {
-			login: new State(
-				[
-					form.input.password
-				], [
-					form.box.password
-				],
-				loginEvent,
-				loginAction
-			),
-			register: new State(
-				[
-					form.input.password,
-					form.input.passwordConfirm
-				], [
-					form.box.password,
-					form.box.passwordConfirm
-				],
-				registerEvent
-			),
-			verify: new State(
-				[
-					form.input.verifyCode
-				], [
-					form.box.verify
-				],
-				verifyEvent
-			)
-		};
-	form.group.addEventListener('submit', loginEvent);
+		state = {};
+
+	state.register = new State([
+		form.input.password,
+		form.input.passwordConfirm
+	], [
+		form.box.password,
+		form.box.passwordConfirm,
+	], {
+		text: 'Register',
+		event: registerEvent
+	});
+	state.login = new State([
+		form.input.password
+	], [
+		form.box.password,
+		form.box.support
+	], {
+		text: 'Sign in',
+		event: loginEvent
+	}, {
+		text: 'Register new user',
+		event: state.register.init
+	});
+	state.verify = new State([
+		form.input.verifyCode
+	], [
+		form.box.verify,
+		form.box.support
+	], {
+		text: 'Verify',
+		event: verifyEvent
+	}, {
+		text: 'Re-send verification email',
+		event: resendVerifyEmailEvent
+	});
+	state.changePassword = new State([
+		form.input.password,
+		form.input.verifyCode
+	], [
+		form.box.password,
+		form.box.verify,
+		form.box.support
+	], {
+		text: 'Change Password',
+		event: passwordChangeEvent
+	}, {
+		text: 'Re-send verification email',
+		event: resendPasswordChangeEmailEvent
+	});
+	state.current = state.login;
+	state.login.init();
+
 	window.form = form;
 	window.userData = userData;
 	window.logout = logOut;
 	window.state = state;
-	// window.userData = userData;
-	// window.updateMessage = updateMessage;
 	window.checkAuth = checkAuth;
-	window.test = function(code) {
-		// console.log(createCognitoUserPool(awsCognito_poolId, awsCognito_appClient));
-		initVerify();
-		// createCognitoUser(
-		// 	createCognitoUserPool(awsCognito_poolId, awsCognito_appClient),
-		// 	form.emailField.value
-		// ).confirmRegistration(code, true, (error, result) => console.log(error, result));
-	};
 }(window));
-
-// =====================================================================================================================
-
-function scopeWrapper($) {
-	var signinUrl = '/signin.html';
-
-	if (!(_config.cognito.userPoolId &&
-			_config.cognito.userPoolClientId &&
-			_config.cognito.region)) {
-		$('#noCognitoMessage').show();
-		return;
-	}
-
-	$(function onDocReady() {
-		$('#signinForm').submit(handleSignin);
-		$('#registrationForm').submit(handleRegister);
-		$('#verifyForm').submit(handleVerify);
-	});
-
-	function handleSignin(event) {
-		var email = $('#emailInputSignin').val();
-		var password = $('#passwordInputSignin').val();
-		event.preventDefault();
-		signin(email, password,
-			function signinSuccess() {
-				console.log('Successfully Logged In');
-				window.location.href = 'ride.html';
-			},
-			function signinError(err) {
-				alert(err);
-			}
-		);
-	}
-
-	function handleRegister(event) {
-		var email = $('#emailInputRegister').val();
-		var password = $('#passwordInputRegister').val();
-		var password2 = $('#password2InputRegister').val();
-
-		var onSuccess = function registerSuccess(result) {
-			var cognitoUser = result.user;
-			console.log('user name is ' + cognitoUser.getUsername());
-			var confirmation = ('Registration successful. Please check your email inbox or spam folder for your verification code.');
-			if (confirmation) {
-				window.location.href = 'verify.html';
-			}
-		};
-		var onFailure = function registerFailure(err) {
-			alert(err);
-		};
-		event.preventDefault();
-
-		if (password === password2) {
-			register(email, password, onSuccess, onFailure);
-		} else {
-			alert('Passwords do not match');
-		}
-	}
-
-	function handleVerify(event) {
-		var email = $('#emailInputVerify').val();
-		var code = $('#codeInputVerify').val();
-		event.preventDefault();
-		verify(email, code,
-			function verifySuccess(result) {
-				console.log('call result: ' + result);
-				console.log('Successfully verified');
-				alert('Verification successful. You will now be redirected to the login page.');
-				window.location.href = signinUrl;
-			},
-			function verifyError(err) {
-				alert(err);
-			}
-		);
-	}
-};
