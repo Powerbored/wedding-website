@@ -18,14 +18,14 @@ export function ExpandingBox(element) {
 		this.element.style.height = clientHeight;
 		return clientHeight;
 	};
-	this.expand = function(resizeContent) {
+	this.expand = function(resizeContent, callback) {
 		const lockHeight = this.lockHeight();
 		if (!this.expanded) {
 			this.element.setAttribute('data-expanded', true);
 			this.expanded = true;
 		}
 		if (resizeContent) {
-			resizeContent();
+			resizeContent(this);
 		}
 		window.requestAnimationFrame(
 			// LockHeight gets painted here
@@ -36,7 +36,12 @@ export function ExpandingBox(element) {
 						this.element.style.height = contentHeight;
 						this.element.addEventListener(
 							'transitionend',
-							() => {transitionEndExpanded(this);},
+							() => {
+								transitionEndExpanded(this);
+								if (callback) {
+									callback(this);
+								}
+							},
 							once
 						);
 					} else {
@@ -46,7 +51,7 @@ export function ExpandingBox(element) {
 			)
 		);
 	};
-	this.collapse = function() {
+	this.collapse = function(callback) {
 		if (this.expanded) {
 			if (this.lockHeight() !== 0) {
 				window.requestAnimationFrame(
@@ -56,7 +61,12 @@ export function ExpandingBox(element) {
 							this.element.style.height = 0;
 							this.element.addEventListener(
 								'transitionend',
-								() => {transitionEndCollapsed(this);},
+								() => {
+									transitionEndCollapsed(this);
+									if (callback) {
+										callback(this);
+									}
+								},
 								once
 							);
 						}

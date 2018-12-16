@@ -6,6 +6,10 @@
 	border-radius: 2px;
 	margin: 0;
 
+	> div {
+		padding: 1px 0; // forces correct client height calculation
+	}
+
 	&[data-expanded="false"] {
 		height: 0;
 
