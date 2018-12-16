@@ -10,7 +10,11 @@ const
 		},
 		cognitoLogin: {
 			chunk: 'cognito-login',
-			resource: 'src/components/cognito/login.js'
+			resource: 'src/components/cognito/index.js'
+		},
+		rsvp: {
+			chunk: 'rsvp',
+			resource: 'src/components/rsvp/index.js'
 		}
 	},
 	templates = {
@@ -25,6 +29,12 @@ const
 			name: 'src/login.hbs',
 			components: [
 				components.cognitoLogin
+			]
+		},
+		rsvp: {
+			name: 'src/rsvp.hbs',
+			components: [
+				components.rsvp
 			]
 		}
 	},
@@ -46,7 +56,7 @@ const
 		},
 		rsvp: {
 			title: 'RSVP',
-			template: templates.login,
+			template: templates.rsvp,
 			body: 'RSVP here',
 		},
 		author: {
