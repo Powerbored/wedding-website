@@ -1,4 +1,4 @@
-import {createCognitoUserPool, createCognitoUser, userDataManager, authToken} from '../../modules/cognitoAuth';
+import {userDataManager, authToken} from '../../modules/cognitoAuth';
 import {awsCognito_poolId, awsCognito_appClient, awsApiGateway_invokeUrl, awsApiGateway_keyWeddingWebsiteToken, aws_region} from '../../../keys/keys.json';
 import {setElementsDisabled} from '../../modules/uiManager';
 import {ExpandingBox} from '../expanding-box/expanding-box.js';
@@ -34,43 +34,6 @@ const login = '/login';
 			},
 		},
 		userData = userDataManager(awsCognito_poolId, awsCognito_appClient),
-		responseSanitiser = function(response, data = {}) {
-			let noUser = data.email ? data.email + ' is not yet registered' : 'User not registered';
-			switch (response.code) {
-			case 'UserNotFoundException':
-				updateMessage('warn',
-					`${noUser}.
-					Please complete user registration below.`
-				);
-				state.register.init();
-				break;
-			case 'UsernameExistsException':
-				if (data.email && data.password) {
-					loginAction(data.email, data.password);
-				} else {
-					updateMessage('error', 'The email requested is already in use.');
-				}
-				break;
-			case 'UserNotConfirmedException':
-				updateMessage('warn', `${data.email} already registered, but is not verified.`);
-				state.verify.init();
-				break;
-			case 'InvalidParameterException':
-				updateMessage('error', 'Password must be at least 8 characters long and contain an uppercase letter and a number.');
-				break;
-			case 'LimitExceededException':
-				updateMessage('error', 'Attempt limit exceeded.\nFor your security, please wait a while before trying again.');
-				break;
-			case 'NotAuthorizedException':
-				updateMessage('error', response.message);
-				promptForgotPassword();
-				break;
-			default:
-				updateMessage('error', response.message);
-				// console.info(response);
-				break;
-			}
-		},
 		updateMessage = function(type, message) {
 			form.box.message.expand(() => {
 				form.message.innerText = message;
@@ -127,8 +90,6 @@ const login = '/login';
 			};
 		},
 		postForm = function() {
-			// window.data = captureFormData();
-			// console.log(window.data);
 			fetch(/*awsApiGateway_invokeUrl*/'https://3beqontg3a.execute-api.ap-southeast-2.amazonaws.com/stage' + '/rsvp', {
 				method: 'POST',
 				mode: 'cors',
