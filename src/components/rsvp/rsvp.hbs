@@ -1,0 +1,38 @@
+<form id="rsvp">
+	<div role="alert" aria-live="assertive">
+		{{#> expanding-box/expanding-box id="messageBox" expanded=false}}
+			<span id="message" class="message"></span>
+		{{/expanding-box/expanding-box}}
+	</div>
+	<label for="contactNumber">Best contact number</label>
+	<input type="text" id="contactNumber" pattern=".*" required>
+	<div id="guests">
+		{{#> expanding-box/expanding-box id="guestBox" expanded=true}}
+			<label for="guestName">
+				Guest full name<em>to appear on place-card</em>
+			</label>
+			<input type="text" id="guestName" required>
+			<label for="guestDiet">Dietary requirements</label>
+			<input type="text" id="guestDiet">
+		{{/expanding-box/expanding-box}}
+	</div>
+	{{#> expanding-box/expanding-box id="removeGuestBox" expanded=false}}
+		<button type="button" id="removeGuestButton">
+			<span>Remove guest</span>
+		</button>
+	{{/expanding-box/expanding-box}}
+	<button type="button" id="addGuestButton">
+		<span>Add guest</span>
+	</button>
+	<input type="checkbox" id="attendance">
+	<label for="attendance">I will be attending the ceremony and reception on March 16<sup>th</sup> 2019.</label>
+	<p>
+		As transportation to and from Tanglewood can be difficult, we recommend that guests who wish to stay in the Mornington Peninsula before or after the wedding stay in Balnarring so that group transport can be organised.<br>
+		Please let us know if you would like transportation to be organised so that we can book ahead.
+	</p>
+	<input type="checkbox" id="transport">
+	<label for="transport">I would like group transport between Balnarring and Tanglewood.</label>
+	<button type="submit" id="submitButton">
+		<span>Save RSVP</span>
+	</button>
+</form>
