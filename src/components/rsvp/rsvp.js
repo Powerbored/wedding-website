@@ -1,5 +1,6 @@
 import {createCognitoUserPool, createCognitoUser, userDataManager, authToken} from '../../modules/cognitoAuth';
 import {awsCognito_poolId, awsCognito_appClient, awsApiGateway_invokeUrl, awsApiGateway_keyWeddingWebsiteToken, aws_region} from '../../../keys/keys.json';
+import {setElementsDisabled} from '../../modules/uiManager';
 import {ExpandingBox} from '../expanding-box/expanding-box.js';
 import '../expanding-box/expanding-box.less';
 
@@ -74,38 +75,6 @@ const login = '/login';
 			form.box.message.expand(() => {
 				form.message.innerText = message;
 				form.message.parentElement.setAttribute('data-message-type', type);
-			});
-		},
-		setElementsDisabled = function(disabled, ...elements) {
-			elements.forEach(element => {
-				switch (element.tagName) {
-				case 'INPUT':
-				case 'BUTTON':
-					if (disabled) {
-						element.setAttribute('disabled', 'disabled');
-					} else {
-						element.removeAttribute('disabled');
-					}
-					break;
-				default:
-					break;
-				}
-			});
-		},
-		setElementsRequired = function(elements, required) {
-			elements.forEach(element => {
-				switch (element.tagName) {
-				case 'INPUT':
-				case 'BUTTON':
-					if (required) {
-						element.setAttribute('required', '');
-					} else {
-						element.removeAttribute('required');
-					}
-					break;
-				default:
-					break;
-				}
 			});
 		},
 		load = function(location) {

@@ -1,5 +1,6 @@
 import {registerCognitoUser, verifyCognitoUser, userDataManager, signIn} from '../../modules/cognitoAuth';
 import {awsCognito_poolId, awsCognito_appClient} from '../../../keys/keys.json';
+import {setElementsDisabled, setElementsRequired} from '../../modules/uiManager';
 import {ExpandingBox} from '../expanding-box/expanding-box.js';
 import '../expanding-box/expanding-box.less';
 
@@ -18,7 +19,7 @@ const rsvp = '/rsvp';
 					state.current.uninit(requiredBoxes);
 				}
 				state.current = thisState;
-				setElementsRequired(requiredElements, true);
+				setElementsRequired(true, ...requiredElements);
 				requiredBoxes.forEach(box => box.expanded ? null : box.expand());
 				form.group.addEventListener('submit', submit.event);
 				form.input.submit.firstElementChild.innerText = submit.text;
@@ -29,13 +30,13 @@ const rsvp = '/rsvp';
 			};
 			this.uninit = function (retainBoxes) {
 				const collapseBoxes = requiredBoxes.filter(item => retainBoxes.indexOf(item) < 0);
-				setElementsRequired(requiredElements, false);
+				setElementsRequired(false, ...requiredElements);
 				collapseBoxes.forEach(box => box.collapse());
 				form.group.removeEventListener('submit', state.current.submit.event);
 				if (state.current.support) {
 					form.input.support.removeEventListener('click', state.current.support.event);
 				}
-				setElementsDisabled([form.input.support], false);
+				setElementsDisabled(false, form.input.support);
 				state.current = null;
 			};
 		}
@@ -104,38 +105,6 @@ const rsvp = '/rsvp';
 				form.message.parentElement.setAttribute('data-message-type', type);
 			});
 		},
-		setElementsDisabled = function(elements, disabled) {
-			elements.forEach(element => {
-				switch (element.tagName) {
-				case 'INPUT':
-				case 'BUTTON':
-					if (disabled) {
-						element.setAttribute('disabled', 'disabled');
-					} else {
-						element.removeAttribute('disabled');
-					}
-					break;
-				default:
-					break;
-				}
-			});
-		},
-		setElementsRequired = function(elements, required) {
-			elements.forEach(element => {
-				switch (element.tagName) {
-				case 'INPUT':
-				case 'BUTTON':
-					if (required) {
-						element.setAttribute('required', '');
-					} else {
-						element.removeAttribute('required');
-					}
-					break;
-				default:
-					break;
-				}
-			});
-		},
 		load = function(location) {
 			setTimeout(() => {
 				if (location) {
@@ -150,7 +119,7 @@ const rsvp = '/rsvp';
 			loginAction(form.input.email.value, form.input.password.value);
 		},
 		loginAction = function(email, password) {
-			setElementsDisabled(Object.values(form.input), true);
+			setElementsDisabled(true, ...Object.values(form.input));
 			signIn(
 				userData.setUser(email),
 				email,
@@ -158,7 +127,7 @@ const rsvp = '/rsvp';
 				result => loginSuccess(result),
 				error => {
 					responseSanitiser(error, {email, password});
-					setElementsDisabled(Object.values(form.input), false);
+					setElementsDisabled(false, ...Object.values(form.input));
 				}
 			);
 		},
@@ -189,7 +158,7 @@ const rsvp = '/rsvp';
 				code: form.input.verifyCode.value
 			};
 			event.preventDefault();
-			setElementsDisabled(Object.values(form.input), true);
+			setElementsDisabled(true, ...Object.values(form.input));
 
 			userData.setUser(data.email).confirmPassword(
 				data.code,
@@ -197,12 +166,12 @@ const rsvp = '/rsvp';
 				{
 					onSuccess: () => {
 						updateMessage('success', 'Password successfully changed.\nPlease sign in below');
-						setElementsDisabled(Object.values(form.input), false);
+						setElementsDisabled(false, ...Object.values(form.input));
 						state.login.init();
 					},
 					onFailure: (error) => {
 						responseSanitiser(error);
-						setElementsDisabled(Object.values(form.input), false);
+						setElementsDisabled(false, ...Object.values(form.input));
 					}
 				}
 			);
@@ -210,16 +179,16 @@ const rsvp = '/rsvp';
 		resendPasswordChangeEmailEvent = function() {
 			const activeUser = userData.currentUser;
 
-			setElementsDisabled(Object.values(form.input), true);
+			setElementsDisabled(true, ...Object.values(form.input));
 			activeUser.forgotPassword(
 				{
 					onSuccess: () => {
 						resendEmailSuccess(activeUser.username, 'password change');
-						setElementsDisabled(Object.values(form.input), false);
+						setElementsDisabled(false, ...Object.values(form.input));
 					},
 					onFailure: (error) => {
 						responseSanitiser(error);
-						setElementsDisabled(Object.values(form.input), false);
+						setElementsDisabled(false, ...Object.values(form.input));
 					}
 				}
 			);
@@ -231,7 +200,7 @@ const rsvp = '/rsvp';
 				passwordConfirm: form.input.passwordConfirm.value
 			};
 			event.preventDefault();
-			setElementsDisabled(Object.values(form.input), true);
+			setElementsDisabled(true, ...Object.values(form.input));
 
 			if (data.password === data.passwordConfirm) {
 				registerCognitoUser(
@@ -242,16 +211,16 @@ const rsvp = '/rsvp';
 						resendEmailSuccess(result.user.username, 'registration');
 						userData.setUser(data.email);
 						state.verify.init();
-						setElementsDisabled(Object.values(form.input), false);
+						setElementsDisabled(false, ...Object.values(form.input));
 					},
 					error => {
 						responseSanitiser(error, data);
-						setElementsDisabled(Object.values(form.input), false);
+						setElementsDisabled(false, ...Object.values(form.input));
 					}
 				);
 			} else {
 				updateMessage('error', 'Passwords do not match.');
-				setElementsDisabled(Object.values(form.input), false);
+				setElementsDisabled(false, ...Object.values(form.input));
 			}
 		},
 		verifyEvent = function(event) {
@@ -259,7 +228,7 @@ const rsvp = '/rsvp';
 			verifyAction(form.input.email.value, form.input.verifyCode.value);
 		},
 		verifyAction = function(email, code) {
-			setElementsDisabled(Object.values(form.input), true);
+			setElementsDisabled(true, ...Object.values(form.input));
 			verifyCognitoUser(
 				userData.setUser(email),
 				code,
@@ -268,18 +237,18 @@ const rsvp = '/rsvp';
 						`${email} verified successfully.
 						Please sign in to continue.`
 					);
-					setElementsDisabled(Object.values(form.input), false);
+					setElementsDisabled(false, ...Object.values(form.input));
 					state.login.init();
 				},
 				error => {
 					responseSanitiser(error, {email, code});
-					setElementsDisabled(Object.values(form.input), false);
+					setElementsDisabled(false, ...Object.values(form.input));
 				}
 			);
 		},
 		resendVerifyEmailEvent = function(event) {
 			event.preventDefault();
-			setElementsDisabled([form.input.support], true);
+			setElementsDisabled(true, form.input.support);
 			resendEmailAction();
 		},
 		resendEmailAction = function() {
@@ -289,7 +258,7 @@ const rsvp = '/rsvp';
 					(error) => {
 						if (error) {
 							responseSanitiser(error);
-							setElementsDisabled([form.input.support], false);
+							setElementsDisabled(false, form.input.support);
 						} else {
 							resendEmailSuccess(activeUser.username, 'registration');
 						}
