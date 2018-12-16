@@ -1,9 +1,8 @@
-@import (reference) '../../index.less';
+@import (reference) './index.less';
 
 .expanding-box {
 	> div {
 		background-color: inherit;
-		padding: 1px 0; // forces correct client height calculation
 		transition: background-color @td-colour ease-in-out;
 
 		&[data-message-type="error"] {
@@ -23,4 +22,10 @@
 .message {
 	display: block;
 	padding: 1em;
+
+	a {
+		display: inline-block;
+		color: @c-body-copy;
+		text-decoration: underline;
+	}
 }

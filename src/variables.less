@@ -9,7 +9,12 @@
 
 @base-font-size-min: 16;
 @base-font-size-max: 20;
-@base-font-size-scaled: %(~"calc(%s + %s * ((100vw - %s) / %s))", unit(@base-font-size-min, px), @base-font-size-max - @base-font-size-min, unit(@break-small, px), @break-large - @break-small);
+@base-font-size-scaled: %(
+	~"calc(%s + %s * ((100vw - %s) / %s))",
+	unit(@base-font-size-min, px),
+	@base-font-size-max - @base-font-size-min,
+	unit(@break-small, px), @break-large - @break-small
+);
 
 @c-deep-grey: hsl(240, 5%, 22%);
 @c-navy: hsl(216, 90%, 12%);
@@ -26,7 +31,7 @@
 	display: inline-block;
 	font-family: 'Pacifico', cursive;
 	line-height: 1;
-	margin-top: -0.3em;
+	margin-top: -0.1em;
 	font-style: normal;
 }
 
