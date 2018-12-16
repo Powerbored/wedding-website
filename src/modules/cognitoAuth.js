@@ -1,5 +1,5 @@
 // import {Config, AuthenticationDetails} from 'aws-sdk';
-import {CognitoUserPool, CognitoUser, CognitoUserAttribute, confirmRegistration, AuthenticationDetails} from 'amazon-cognito-identity-js';
+import {CognitoUserPool, CognitoUser, CognitoUserAttribute, AuthenticationDetails} from 'amazon-cognito-identity-js';
 // const AWS = require('aws-sdk');
 
 /**
@@ -13,10 +13,6 @@ export function createCognitoUserPool(userPoolId, userPoolClientId) {
 		UserPoolId: userPoolId,
 		ClientId: userPoolClientId
 	});
-}
-
-export function setCognitoRegion(region) {
-	Config.region = region;
 }
 
 /**
@@ -139,4 +135,40 @@ export function registerCognitoUser(userPool, email, password, onSuccess, onFail
 			}
 		}
 	);
+}
+
+/**
+ * returns object
+ * @param {String} poolId
+ * @param {String} appClient
+ */
+export function userDataManager(poolId, appClient) {
+	return {
+		get userPool() {
+			if (!this._userPool) {
+				this._userPool = createCognitoUserPool(poolId, appClient);
+			}
+			return this._userPool;
+		},
+		set userPool(userPool) {
+			this._userPool = userPool;
+		},
+		setUser: function(username) {
+			this._currentUser = createCognitoUser(
+				this.userPool,
+				username
+			);
+			return this._currentUser;
+		},
+		get currentUser() {
+			return this._currentUser || this.userPool.getCurrentUser();
+		},
+		set currentUser(user) {
+			if (typeof user === 'string') {
+				this._currentUser = this.setUser(user);
+			} else {
+				this._currentUser = user;
+			}
+		}
+	};
 }

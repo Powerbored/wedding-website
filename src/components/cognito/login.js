@@ -1,11 +1,11 @@
-
-import {createCognitoUserPool, registerCognitoUser, verifyCognitoUser, createCognitoUser, signIn} from '../../modules/cognitoAuth';
+import {registerCognitoUser, verifyCognitoUser, userDataManager, signIn} from '../../modules/cognitoAuth';
 import {awsCognito_poolId, awsCognito_appClient} from '../../../keys/keys.json';
 import {ExpandingBox} from '../expanding-box/expanding-box.js';
 import '../expanding-box/expanding-box.less';
-import './form.less';
 
-(function(window){
+const rsvp = '/rsvp';
+
+(function(window, document){
 	class State {
 		constructor(requiredElements, requiredBoxes, submit, support) {
 			const thisState = this;
@@ -42,52 +42,25 @@ import './form.less';
 	}
 	const
 		form = {
-			group: window.cognitoRegistration,
-			message: window.message,
+			group: document.getElementById('cognitoRegistration'),
+			message: document.getElementById('message'),
 			input: {
-				email: window.emailInput,
-				password: window.passwordInput,
-				passwordConfirm: window.passwordConfirmInput,
-				verifyCode: window.verifyCodeInput,
-				submit: window.submitButton,
-				support: window.supportButton
+				email: document.getElementById('emailInput'),
+				password: document.getElementById('passwordInput'),
+				passwordConfirm: document.getElementById('passwordConfirmInput'),
+				verifyCode: document.getElementById('verifyCodeInput'),
+				submit: document.getElementById('submitButton'),
+				support: document.getElementById('supportButton')
 			},
 			box: {
-				message: new ExpandingBox(window.messageBox),
-				password: new ExpandingBox(window.passwordBox),
-				passwordConfirm: new ExpandingBox(window.passwordConfirmBox),
-				verify: new ExpandingBox(window.verifyBox),
-				support: new ExpandingBox(window.supportBox)
+				message: new ExpandingBox(document.getElementById('messageBox')),
+				password: new ExpandingBox(document.getElementById('passwordBox')),
+				passwordConfirm: new ExpandingBox(document.getElementById('passwordConfirmBox')),
+				verify: new ExpandingBox(document.getElementById('verifyBox')),
+				support: new ExpandingBox(document.getElementById('supportBox'))
 			},
 		},
-		userData = {
-			get userPool() {
-				if (!this._userPool) {
-					this._userPool = createCognitoUserPool(awsCognito_poolId, awsCognito_appClient);
-				}
-				return this._userPool;
-			},
-			set userPool(userPool) {
-				this._userPool = userPool;
-			},
-			setUser: function(username) {
-				this._currentUser = createCognitoUser(
-					this.userPool,
-					username
-				);
-				return this._currentUser;
-			},
-			get currentUser() {
-				return this._currentUser || null;
-			},
-			set currentUser(user) {
-				if (typeof user === 'string') {
-					this._currentUser = this.setUser(user);
-				} else {
-					this._currentUser = user;
-				}
-			}
-		},
+		userData = userDataManager(awsCognito_poolId, awsCognito_appClient),
 		responseSanitiser = function(response, data = {}) {
 			let noUser = data.email ? data.email + ' is not yet registered' : 'User not registered';
 			switch (response.code) {
@@ -191,7 +164,7 @@ import './form.less';
 		},
 		loginSuccess = function() {
 			updateMessage('success', 'Successfully signed in.\nRedirecting to RSVP page.');
-			load('/rsvp');
+			load(rsvp);
 		},
 		promptForgotPassword = function() {
 			if (state.current.support) {
@@ -383,5 +356,16 @@ import './form.less';
 		text: 'Re-send verification email',
 		event: resendPasswordChangeEmailEvent
 	});
+
 	state.login.init();
-}(window));
+
+	if (userData.currentUser) {
+		const link = document.createElement('a');
+		link.setAttribute('href', rsvp);
+		link.innerText = 'Click here to RSVP';
+		updateMessage('success',
+			`You are already signed in as ${userData.currentUser.username}`
+		);
+		form.message.appendChild(link);
+	}
+}(window, document));
