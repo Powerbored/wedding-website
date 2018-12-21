@@ -15,7 +15,7 @@ const login = '/login';
 			input: {
 				contactNumber: document.getElementById('contactNumber'),
 				attendance: document.getElementById('attendance'),
-				accomodation: document.getElementById('accomodation'),
+				recovery: document.getElementById('recovery'),
 				transport: document.getElementById('transport'),
 				addGuest: document.getElementById('addGuestButton'),
 				removeGuest: document.getElementById('removeGuestButton'),
@@ -90,6 +90,7 @@ const login = '/login';
 				guests,
 				attendance: form.input.attendance.checked,
 				transport: form.input.transport.checked,
+				recovery: form.input.recovery.checked,
 			};
 		},
 		postForm = function(authorisation) {
@@ -117,8 +118,11 @@ const login = '/login';
 			event.preventDefault();
 			setElementsDisabled(true, form.input.submit);
 			checkAuth(token => {
-				postForm(token);
-			}).then(() => {
+				postForm(token).finally(() => {
+					setElementsDisabled(false, form.input.submit);
+				});
+			},
+			() => {
 				setElementsDisabled(false, form.input.submit);
 			});
 		},
