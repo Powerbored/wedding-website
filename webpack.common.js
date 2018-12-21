@@ -36,7 +36,6 @@ const
 						...page.template.components.map(component => component.chunk)
 					];
 				}
-				console.log(pluginData);
 				return new HtmlWebpackPlugin(pluginData);
 			} else {
 				return;
@@ -44,7 +43,7 @@ const
 		}),
 	components = Object.keys(content.components)
 		.reduce((acc, key) => {
-			let component = content.components[key]
+			let component = content.components[key];
 			acc[component.chunk] = path.resolve(__dirname, component.resource);
 			return acc;
 		}, {});

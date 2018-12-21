@@ -7,6 +7,7 @@ module.exports = merge(common, {
 	devServer: {
 		contentBase: [
 			path.resolve(__dirname, 'src'),
+			path.resolve(__dirname, 'favicon'),
 		],
 	},
 });
