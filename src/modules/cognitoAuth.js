@@ -84,21 +84,19 @@ export function signUpStatus() {
 
 /**
  *
- * @param {CognitoUserPool} userPool
+ * @param {CognitoUser} cognitoUser
  * @returns {Promise} JWT Token
  */
-export function authToken(userPool) {
+export function authToken(cognitoUser) {
 	return new Promise(function fetchCurrentAuthToken(resolve, reject) {
-		const cognitoUser = userPool.getCurrentUser();
-
 		if (cognitoUser) {
 			cognitoUser.getSession(function sessionCallback(err, session) {
 				if (err) {
 					reject(err);
-				} else if (!session.isValid()) {
-					resolve(null);
-				} else {
+				} else if (session.isValid()) {
 					resolve(session.getIdToken().getJwtToken());
+				} else {
+					resolve(null);
 				}
 			});
 		} else {
@@ -146,7 +144,7 @@ export function userDataManager(poolId, appClient) {
 	return {
 		get userPool() {
 			if (!this._userPool) {
-				this._userPool = createCognitoUserPool(poolId, appClient);
+				this.userPool = createCognitoUserPool(poolId, appClient);
 			}
 			return this._userPool;
 		},
@@ -161,7 +159,10 @@ export function userDataManager(poolId, appClient) {
 			return this._currentUser;
 		},
 		get currentUser() {
-			return this._currentUser || this.userPool.getCurrentUser();
+			if (!this._currentUser) {
+				this.currentUser = this.userPool.getCurrentUser();
+			}
+			return this._currentUser;
 		},
 		set currentUser(user) {
 			if (typeof user === 'string') {

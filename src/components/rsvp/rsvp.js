@@ -33,12 +33,14 @@ const login = '/login';
 				]
 			},
 		},
+		// TODO: response sanitisation
 		userData = userDataManager(awsCognito_poolId, awsCognito_appClient),
 		updateMessage = function(type, message) {
 			form.box.message.expand(() => {
 				form.message.innerText = message;
 				form.message.parentElement.setAttribute('data-message-type', type);
 			});
+			document.body.scrollTo({top: 0, behavior: 'smooth'});
 		},
 		load = function(location) {
 			setTimeout(() => {
@@ -50,10 +52,12 @@ const login = '/login';
 			}, 3000);
 		},
 		checkAuth = function(callback, errorResponse) {
-			authToken(userData.userPool)
-				.then(function setAuthToken(token) {
-					if (token && callback) {
-						callback(token);
+			return authToken(userData.currentUser)
+				.then(token => {
+					if (token) {
+						if (callback) {
+							callback(token);
+						}
 					} else {
 						updateMessage('warn', 'No user signed in, redirecting to sign in page.');
 						load(login);
@@ -64,12 +68,13 @@ const login = '/login';
 					if (errorResponse) {
 						errorResponse(error);
 					}
-				});
+				})
+			;
 		},
 		captureFormData = function() {
 			const
 				guestNumber = form.guests.children.length,
-				username = userData.currentUser;
+				username = userData.currentUser.username;
 			let guests = [];
 
 			for (let guest = 0; guest < guestNumber; guest++) {
@@ -80,32 +85,42 @@ const login = '/login';
 				});
 			}
 			return {
-				id: atob(username),
 				username,
 				contactNumber: form.input.contactNumber.value,
 				guests,
 				attendance: form.input.attendance.checked,
-				// accomodation: form.input.accomodation.checked,
 				transport: form.input.transport.checked,
 			};
 		},
-		postForm = function() {
-			fetch(/*awsApiGateway_invokeUrl*/'https://3beqontg3a.execute-api.ap-southeast-2.amazonaws.com/stage' + '/rsvp', {
+		postForm = function(authorisation) {
+			return fetch(awsApiGateway_invokeUrl + '/stage/rsvp', {
 				method: 'POST',
 				mode: 'cors',
 				headers: {
 					'Content-Type': 'Application/json',
 					'X-Amz-Docs-Region': aws_region,
-					'X-Api-Key': awsApiGateway_keyWeddingWebsiteToken
+					'X-Api-Key': awsApiGateway_keyWeddingWebsiteToken,
+					Authorisation: authorisation
 				},
 				body: JSON.stringify(captureFormData())
-			}).then((error, response) => {
-				console.log(error, response);
-			});
+			}).then(response => {
+				response.json().then(json => {
+					if (response.ok) {
+						updateMessage('success', json.message);
+					} else {
+						updateMessage('error', json.message);
+					}
+				});
+			}).catch(error => updateMessage('error', 'Failed to save RSVP\n' + error));
 		},
 		rsvpEvent = function(event) {
 			event.preventDefault();
-			checkAuth(postForm);
+			setElementsDisabled(true, form.input.submit);
+			checkAuth(token => {
+				postForm(token);
+			}).then(() => {
+				setElementsDisabled(false, form.input.submit);
+			});
 		},
 		addGuestEvent = function(event) {
 			event.preventDefault();
@@ -157,10 +172,6 @@ const login = '/login';
 			}
 		};
 
-	window.userData = userData;
-	window.form = form;
-	window.test = captureFormData;
-
 	checkAuth(
 		() => {
 			form.group.addEventListener('submit', rsvpEvent);
@@ -169,4 +180,5 @@ const login = '/login';
 		},
 		() => load(login)
 	);
+	window.userData = userData;
 }(window, document));
