@@ -8,8 +8,8 @@
 
 @focus-indicator-size: 4px;
 
-@base-font-size-min: 16;
-@base-font-size-max: 20;
+@base-font-size-min: 15;
+@base-font-size-max: 18;
 @base-font-size-scaled: %(
 	~"calc(%s + %s * ((100vw - %s) / %s))",
 	unit(@base-font-size-min, px),
@@ -34,6 +34,7 @@
 	line-height: 1;
 	margin-top: -0.1em;
 	font-style: normal;
+	font-weight: lighter;
 }
 
 @headers: h1, h2, h3, h4, h5, h6;

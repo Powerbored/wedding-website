@@ -24,7 +24,7 @@
 	padding: 1em;
 
 	a {
-		display: inline-block;
+		display: block;
 		color: @c-body-copy;
 		text-decoration: underline;
 	}
@@ -33,6 +33,11 @@
 form {
 	max-width: 24rem;
 	margin: 0 auto;
+	line-height: 1.4;
+
+	p {
+		line-height: 1.6;
+	}
 }
 
 @{form-elements} {
@@ -94,10 +99,9 @@ label {
 			appearance: none;
 			position: absolute;
 			margin: 0;
-			left: 0;
-			right: 0;
 			top: 0;
 			bottom: 0;
+			width: 100%;
 
 			&:checked + svg {
 				.check {
@@ -134,7 +138,7 @@ button {
 		padding: 1em;
 		border: 2px dashed;
 		font-size: 1.3rem;
-		background-color: #fff0;
+		background-color: fade(white, 0%);
 		transition: background-color @td-colour;
 
 		span {
@@ -146,7 +150,7 @@ button {
 		}
 
 		&:hover, &:focus {
-			background-color: #fff2;
+			background-color: fade(white, 13%);
 		}
 
 		&[disabled] {

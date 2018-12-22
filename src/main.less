@@ -1,5 +1,6 @@
 @import './index.less';
 @import './form.less';
+@import './components/navigation/navigation.less';
 
 @import (css) url('https://fonts.googleapis.com/css?family=Pacifico');
 
@@ -33,11 +34,13 @@ body {
 }
 
 @{headers} {
+	.f-display;
 	margin: 1rem 0;
-	font-size: .px-to-rem(24px)[@rem];
 }
 
 header {
+	margin-bottom: 4rem;
+
 	.title {
 		width: 100%;
 		max-width: unit(@break-small, px);
@@ -45,7 +48,7 @@ header {
 	}
 
 	svg {
-		fill: @c-body-copy;
+		fill: @c-parchment;
 	}
 }
 
