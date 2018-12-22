@@ -1,0 +1,6 @@
+<svg focusable="false" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" height="32" width="32">
+	<circle class="check-background" cx="16" cy="16" r="14.2"/>
+	<path class="check-ring" d="M16,0.5C7.5,0.5,0.5,7.5,0.5,16s7,15.5,15.5,15.5s15.5-7,15.5-15.5S24.5,0.5,16,0.5z M16,28.8C8.9,28.8,3.2,23.1,3.2,16
+		S8.9,3.2,16,3.2S28.8,8.9,28.8,16S23.1,28.8,16,28.8z"/>
+	<polyline class="check" points="7.5,15.6 13.6,21.6 24.5,10.4"/>
+</svg>
