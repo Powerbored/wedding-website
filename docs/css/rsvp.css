@@ -1,0 +1,1 @@
+.expanding-box{-webkit-transition:height .5s ease-in-out;transition:height .5s ease-in-out;overflow:hidden;border-radius:2px;margin:0}.expanding-box>div{padding:1px 0}.expanding-box[data-expanded=false]{height:0}.expanding-box[data-expanded=false] *{display:none!important}

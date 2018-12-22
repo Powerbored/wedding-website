@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"description": "Andrew and Kirsty wedding website",
 	"sideEffects": [
-		"./src/*.js",
+		"./src/**/*.js",
 		"*.css",
 		"*.less"
 	],
