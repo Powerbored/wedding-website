@@ -7,28 +7,33 @@ const
 	entries = {
 		site: path.resolve(__dirname, 'src/index.js'),
 	},
-	resolveStructure = function(structure, name, pagePath, resolvedStructure = []) {
+	resolveStructure = function(structure, name, pagePath, resolvedStructure) {
 		if (structure.index) {
 			resolvedStructure.push({
-				path: path.resolve(pagePath, 'index.html'),
+				path: pagePath + 'index.html',
 				ref: name,
+				title: structure.index.title,
 				template: structure.index.template,
 			});
 		}
 		let subPages = Object.assign({}, structure.pages);
 		if (subPages && Object.keys(subPages).length > 0) {
 			Object.keys(subPages).forEach(page => {
-				resolvedStructure = resolveStructure(subPages[page], page, path.resolve(pagePath, page), resolvedStructure);
+				resolvedStructure = resolveStructure(subPages[page], page, pagePath + page + '/', resolvedStructure);
 			});
 		}
 		return resolvedStructure;
 	},
-	htmlPages = resolveStructure(content.structure, 'home', 'docs')
-		.map(page => {
+	htmlPages = resolveStructure(content.structure, 'home', '/', [])
+		.map((page, i, structure) => {
 			const pluginData = {};
 			if (page.path && page.ref) {
-				pluginData.filename = page.path;
+				pluginData.filename = path.resolve(__dirname, 'docs' + page.path);
 				pluginData.ref = page.ref;
+				pluginData.nav = structure.map(page => ({
+					title: page.title,
+					location: page.path
+				}));
 				pluginData.template = path.resolve(__dirname, page.template.name) || './src/index.hbs';
 				if (page.template && page.template.components) {
 					pluginData.chunks = [
@@ -62,6 +67,15 @@ module.exports = {
 	],
 	module: {
 		rules: [
+			{
+				test: /\.js$/,
+				use: {
+					loader: 'babel-loader',
+					options: {
+						presets: ['@babel/preset-env']
+					}
+				}
+			},
 			{
 				test: /\.less$/,
 				use: [

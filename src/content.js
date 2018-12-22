@@ -40,29 +40,16 @@ const
 	},
 	pages = {
 		home: {
-			title: 'Andrew and Kirsty',
+			title: 'Home',
 			template: templates.index,
-			body: 'are getting married',
-		},
-		about: {
-			title: 'About',
-			template: templates.index,
-			body: 'This is the about page',
 		},
 		login: {
 			title: 'Sign in',
 			template: templates.login,
-			body: 'Sign in or register to RSVP',
 		},
 		rsvp: {
 			title: 'RSVP',
 			template: templates.rsvp,
-			body: 'RSVP here',
-		},
-		author: {
-			title: 'Powerbored',
-			template: templates.index,
-			body: 'Authored by Powerbored',
 		},
 	},
 	structure = {

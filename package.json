@@ -16,8 +16,12 @@
 	},
 	"private": true,
 	"devDependencies": {
+		"@babel/core": "^7.2.2",
+		"@babel/preset-env": "^7.2.3",
 		"autoprefixer": "^9.2.1",
 		"aws-sdk": "^2.357.0",
+		"babel-loader": "^8.0.4",
+		"babel-preset-env": "^1.7.0",
 		"browserslist": "^4.2.1",
 		"clean-webpack-plugin": "^0.1.19",
 		"copy-webpack-plugin": "^4.5.3",
