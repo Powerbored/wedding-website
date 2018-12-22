@@ -13,7 +13,7 @@ module.exports = merge(common, {
 			{
 				from: 'CNAME',
 			}, {
-				from: 'favicon/*'
+				from: 'favicon'
 			}, {
 				from: 'src/assets/',
 				to: 'assets',
