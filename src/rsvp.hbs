@@ -2,6 +2,6 @@
 {{importJsContent 'src/content.js'}}
 {{copyObjectChildToNewContext content.pages htmlWebpackPlugin.options.ref this 'page'}}
 
-{{#> main page}}
+{{#> main page nav=htmlWebpackPlugin.options.nav}}
 	{{> rsvp/rsvp}}
 {{/main}}

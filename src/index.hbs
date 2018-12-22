@@ -2,8 +2,8 @@
 {{importJsContent 'src/content.js'}}
 {{copyObjectChildToNewContext content.pages htmlWebpackPlugin.options.ref this 'page'}}
 
-{{#> main page}}
-	{{#if body}}<p>{{body}}</p>{{/if}}
+{{#> main page nav=htmlWebpackPlugin.options.nav}}
+	<p>Andrew &amp; Kirsty are getting married in</p>
 	{{> countdown-timer/countdown-timer "2019-03-16T16:00:00+10:00"}}
 	{{> map/map}}
 {{/main}}
