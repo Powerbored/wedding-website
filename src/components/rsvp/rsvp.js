@@ -94,7 +94,7 @@ const login = '/login';
 			};
 		},
 		postForm = function(authorisation) {
-			return fetch(awsApiGateway_invokeUrl + '/stage/rsvp', {
+			return fetch(awsApiGateway_invokeUrl + '/prod/rsvp', {
 				method: 'POST',
 				mode: 'cors',
 				headers: {
