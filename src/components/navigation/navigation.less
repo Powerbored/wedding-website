@@ -1,0 +1,55 @@
+@import (reference) '../../variables.less';
+
+nav {
+	margin: @padding-block 0;
+
+	> ul {
+		margin: 0;
+		padding: 0;
+		text-align: center;
+		list-style: none;
+
+		li {
+			a {
+				display: block;
+				font-size: 1.2rem;
+				font-weight: 600;
+				color: @c-parchment;
+				padding: @padding-tight;
+				transition:	color @td-effect;
+			}
+		}
+	}
+
+	&:after {
+		content: "";
+		display: block;
+		height: 1px;
+		background: linear-gradient(to right, fade(@c-parchment, 0%), @c-parchment, @c-parchment, fade(@c-parchment, 0%));
+	}
+}
+
+@media(min-width: unit(@break-small, px)) {
+	nav {
+
+		> ul {
+			padding-top: @padding-block;
+
+			li {
+				display: inline-block;
+
+				a {
+					padding: @padding-block @padding-block @padding-block + @padding-tight;
+					transform: translateY(@padding-tight);
+					transition:
+						transform @td-size,
+						color @td-effect;
+
+					&:hover, &:focus {
+						transform: translateY(0);
+					}
+				}
+			}
+		}
+	}
+}
