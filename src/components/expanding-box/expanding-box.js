@@ -9,13 +9,14 @@ export function ExpandingBox(element) {
 		transitionEndCollapsed = function(expandingBox) {
 			expandingBox.element.setAttribute('data-expanded', false);
 			expandingBox.expanded = false;
-		};
+		}
+	;
 	this.element = element;
 	this.expanded = element.getAttribute('data-expanded') === 'true';
 	this.lockHeight = function() {
 		const clientHeight = this.element.clientHeight;
 
-		this.element.style.height = clientHeight;
+		this.element.style.height = clientHeight + 'px';
 		return clientHeight;
 	};
 	this.expand = function(resizeContent, callback) {
@@ -33,7 +34,7 @@ export function ExpandingBox(element) {
 				() => {
 					const contentHeight = this.element.firstElementChild.clientHeight;
 					if (lockHeight !== contentHeight) {
-						this.element.style.height = contentHeight;
+						this.element.style.height = contentHeight + 'px';
 						this.element.addEventListener(
 							'transitionend',
 							() => {
