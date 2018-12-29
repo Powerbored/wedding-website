@@ -1,6 +1,7 @@
 import {registerCognitoUser, verifyCognitoUser, userDataManager, signIn} from '../../modules/cognitoAuth';
 import {awsCognito_poolId, awsCognito_appClient} from '../../../keys/keys.json';
 import {setElementsDisabled, setElementsRequired} from '../../modules/uiManager';
+import appendScriptToHead from '../../modules/appendScriptToHead';
 import {ExpandingBox} from '../expanding-box/expanding-box.js';
 import '../expanding-box/expanding-box.less';
 
@@ -277,54 +278,52 @@ const rsvp = '/rsvp';
 		},
 		state = {};
 
-	state.register = new State([
-		form.input.password,
-		form.input.passwordConfirm
-	], [
-		form.box.password,
-		form.box.passwordConfirm,
-	], {
-		text: 'Register',
-		event: registerEvent
-	});
-	state.login = new State([
-		form.input.password
-	], [
-		form.box.password,
-		form.box.support
-	], {
-		text: 'Sign in',
-		event: loginEvent
-	}, {
-		text: 'Register new user',
-		event: state.register.init
-	});
-	state.verify = new State([
-		form.input.verifyCode
-	], [
-		form.box.verify,
-		form.box.support
-	], {
-		text: 'Verify',
-		event: verifyEvent
-	}, {
-		text: 'Re-send verification email',
-		event: resendVerifyEmailEvent
-	});
-	state.changePassword = new State([
-		form.input.password,
-		form.input.verifyCode
-	], [
-		form.box.password,
-		form.box.verify,
-		form.box.support
-	], {
-		text: 'Change Password',
-		event: passwordChangeEvent
-	}, {
-		text: 'Re-send verification email',
-		event: resendPasswordChangeEmailEvent
-	});
+	state.register = new State(
+		[form.input.password, form.input.passwordConfirm],
+		[form.box.password, form.box.passwordConfirm],
+		{
+			text: 'Register',
+			event: registerEvent
+		}
+	);
+	state.login = new State(
+		[form.input.password],
+		[form.box.password, form.box.support],
+		{
+			text: 'Sign in',
+			event: loginEvent
+		}, {
+			text: 'Register new user',
+			event: state.register.init
+		}
+	);
+	state.verify = new State(
+		[form.input.verifyCode],
+		[form.box.verify, form.box.support],
+		{
+			text: 'Verify',
+			event: verifyEvent
+		}, {
+			text: 'Re-send verification email',
+			event: resendVerifyEmailEvent
+		}
+	);
+	state.changePassword = new State(
+		[form.input.password, form.input.verifyCode],
+		[form.box.password, form.box.verify, form.box.support],
+		{
+			text: 'Change Password',
+			event: passwordChangeEvent
+		}, {
+			text: 'Re-send verification email',
+			event: resendPasswordChangeEmailEvent
+		}
+	);
+
+	if (window.fetch === undefined) {
+		appendScriptToHead(document, '/js/fetch.js');
+		console.log('Please stop using Internet Explorer');
+	}
 
 	state.login.init();
 

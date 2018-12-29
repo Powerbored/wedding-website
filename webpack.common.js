@@ -1,11 +1,14 @@
 const
-	evalConstantExports = require('./src/modules/evalConstantExports'),
+	evalConstantExports = require('./src/modules/node_modules/evalConstantExports'),
 	content = evalConstantExports('./src/content.js').content,
 	path = require('path'),
 	HtmlWebpackPlugin = require('html-webpack-plugin'),
 	MiniCssExtractPlugin = require('mini-css-extract-plugin'),
-	entries = {
+	coreEntries = {
 		site: path.resolve(__dirname, 'src/index.js'),
+	},
+	optionalEntries = {
+		fetch: path.resolve(__dirname, 'src/fetch.js'),
 	},
 	resolveStructure = function(structure, name, pagePath, resolvedStructure) {
 		if (structure.index) {
@@ -37,7 +40,7 @@ const
 				pluginData.template = path.resolve(__dirname, page.template.name) || './src/index.hbs';
 				if (page.template && page.template.components) {
 					pluginData.chunks = [
-						...Object.keys(entries),
+						...Object.keys(coreEntries),
 						...page.template.components.map(component => component.chunk)
 					];
 				}
@@ -54,7 +57,7 @@ const
 		}, {});
 
 module.exports = {
-	entry: Object.assign(entries, components),
+	entry: Object.assign(components, optionalEntries, coreEntries),
 	output: {
 		filename: 'js/[name].js',
 		path: path.resolve(__dirname, 'docs'),
@@ -69,11 +72,9 @@ module.exports = {
 		rules: [
 			{
 				test: /\.js$/,
+				exclude: [/node_modules/, /helpers/],
 				use: {
-					loader: 'babel-loader',
-					options: {
-						presets: ['@babel/preset-env']
-					}
+					loader: 'babel-loader'
 				}
 			},
 			{

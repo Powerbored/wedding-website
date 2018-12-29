@@ -1,5 +1,5 @@
 // Given the context, add content from a specified js module
-const evalConstantExports = require('../modules/evalConstantExports');
+const evalConstantExports = require('../modules/node_modules/evalConstantExports');
 
 module.exports = function(jsFile, content = 'content') {
 	const context = arguments[arguments.length - 1];

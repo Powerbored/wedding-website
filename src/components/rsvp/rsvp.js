@@ -1,7 +1,8 @@
 import {userDataManager, authToken} from '../../modules/cognitoAuth';
 import {awsCognito_poolId, awsCognito_appClient, awsApiGateway_invokeUrl, awsApiGateway_keyWeddingWebsiteToken, aws_region} from '../../../keys/keys.json';
-import {setElementsDisabled} from '../../modules/uiManager';
 import {ExpandingBox} from '../expanding-box/expanding-box.js';
+import {setElementsDisabled} from '../../modules/uiManager';
+import appendScriptToHead from '../../modules/appendScriptToHead';
 import '../expanding-box/expanding-box.less';
 
 const login = '/login';
@@ -40,7 +41,11 @@ const login = '/login';
 				form.message.innerText = message;
 				form.message.parentElement.setAttribute('data-message-type', type);
 			});
-			document.body.scrollTo({top: 0, behavior: 'smooth'});
+			try {
+				document.body.scrollTo({top: 0, behavior: 'smooth'});
+			} catch(error) {
+				console.log('Stop using internet explorer!');
+			}
 		},
 		load = function(location) {
 			setTimeout(() => {
@@ -174,15 +179,43 @@ const login = '/login';
 					form.box.removeGuest.collapse();
 				}
 			}
-		};
-
-	checkAuth(
-		() => {
-			form.group.addEventListener('submit', rsvpEvent);
-			form.input.addGuest.addEventListener('click', addGuestEvent);
-			form.input.removeGuest.addEventListener('click', removeGuestEvent);
 		},
-		() => load(login)
-	);
-	window.userData = userData;
+		init = function() {
+			checkAuth(
+				() => {
+					form.group.addEventListener('submit', rsvpEvent);
+					form.input.addGuest.addEventListener('click', addGuestEvent);
+					form.input.removeGuest.addEventListener('click', removeGuestEvent);
+				},
+				() => load(login)
+			);
+		}
+	;
+
+	if (window.fetch === undefined) {
+		new Promise((resolve, reject) => {
+			const validate = function(breakoutNumber) {
+				if (window.fetch === undefined) {
+					if (breakoutNumber > 0) {
+						setTimeout(() => {
+							validate(breakoutNumber-1);
+						}, 500);
+					} else {
+						reject();
+					}
+				} else {
+					resolve();
+				}
+			};
+			appendScriptToHead(document, '/js/fetch.js');
+			validate(20);
+		}).then(() => {
+			init();
+		}).catch(() => {
+			alert('Please use a modern web browser to continue.');
+		});
+	} else {
+		init();
+	}
+
 }(window, document));
