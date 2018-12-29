@@ -45,7 +45,7 @@ function updateElements(targetElements, diff, previous) {
 
 function updateElement(targetElement, diff, previous) {
 	let oldNumber = `<span class="old" role="presentation">${previous}</span>`;
-	if (!previous || diff !== previous) {
+	if (previous === undefined || diff !== previous) {
 		targetElement.querySelector('.value').innerHTML = `
 			<span class="new">${diff}</span>
 			${isNaN(previous) ? '' : oldNumber}

@@ -2,13 +2,15 @@
 
 .countdown-timer {
 	@timer-value-size: 1.5rem;
+	@timer-value-padding: 0.5rem;
+	font-size: 0;
 
 	> span {
 		display: inline-block;
 		width: 40%;
 		min-width: 10rem;
 		color: @c-parchment;
-		padding: 0.5rem;
+		padding: @timer-value-padding;
 
 		> span {
 			vertical-align: bottom;
@@ -61,7 +63,7 @@
 
 	@media (min-width: unit(@break-medium, px)) {
 		> span {
-			padding: 0  0.5rem;
+			padding: 0  @timer-value-padding;
 			width: auto;
 			min-width: auto;
 
@@ -74,7 +76,8 @@
 				width: auto;
 			}
 			.value {
-				width: @timer-value-size * 1.5;
+				width: 2em; // 2 characters wide
+				padding-right: @timer-value-padding;
 				text-align: center;
 				border: none;
 			}
