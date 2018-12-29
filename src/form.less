@@ -62,6 +62,7 @@ label {
 		text-align: left;
 		position: relative;
 		padding-bottom: @padding-tight;
+		border-bottom: 1px solid @c-parchment;
 
 		svg {
 			height: @icon-size;
@@ -102,11 +103,16 @@ label {
 			top: 0;
 			bottom: 0;
 			width: 100%;
+			border: none;
 
 			&:checked + svg {
 				.check {
 					stroke-dasharray: 30 30;
 				}
+			}
+
+			&::-ms-check {
+				display: none;
 			}
 		}
 	}
