@@ -5,9 +5,10 @@ const
 
 require('moment-precise-range-plugin');
 
-function init(targetElement, updateRate) {
+function init(targetElement) {
 	const
 		endTimeString = targetElement.getAttribute('data-target-time') || 'January 19, 2038 03:14:08',
+		updateRate = Number(targetElement.getAttribute('data-target-rate')) || 1,
 		values = evaluateDifferenceFromNow(endTimeString),
 		targetElements = {
 			months: targetElement.querySelector('.months'),
@@ -16,14 +17,13 @@ function init(targetElement, updateRate) {
 			minutes: targetElement.querySelector('.minutes'),
 			seconds: targetElement.querySelector('.seconds'),
 		};
-
 	updateElements(targetElements, values.difference, {});
 	let previousDiff = Object.assign({}, values.difference);
 	setInterval(() => {
 		const values = evaluateDifferenceFromNow(endTimeString);
 		updateElements(targetElements, values.difference, previousDiff);
 		previousDiff = Object.assign({}, values.difference);
-	}, Math.floor(1000/updateRate));
+	}, updateRate);
 }
 
 function evaluateDifferenceFromNow(endTimeString) {
@@ -52,7 +52,7 @@ function updateElement(targetElement, diff, previous) {
 		`;
 		if (diff === 1) {
 			targetElement.querySelector('.s').setAttribute('role', 'presentation');
-		} else if (diff === 0) {
+		} else if (previous === 1) {
 			targetElement.querySelector('.s').removeAttribute('role');
 		}
 		return true;
@@ -61,4 +61,4 @@ function updateElement(targetElement, diff, previous) {
 	}
 }
 
-init(document.querySelector('.countdown-timer'), 1);
+init(document.querySelector('.countdown-timer'));
