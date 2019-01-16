@@ -273,7 +273,8 @@ const rsvp = '/rsvp';
 		resendEmailSuccess = function(username, action) {
 			updateMessage('success',
 				`A verification code has been sent${username ? ' to ' + username : ''}.
-				Please enter the verification code below${action ? ' to complete ' + action : ''}.`
+				Please enter the verification code below${action ? ' to complete ' + action : ''}.
+				Verification emails may be sent to your spam folder.`
 			);
 		},
 		state = {};
