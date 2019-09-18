@@ -56,16 +56,17 @@ const login = '/login';
 				}
 			}, 3000);
 		},
-		checkAuth = function(callback, errorResponse) {
+		checkAuth = function(success, failure, errorResponse) {
 			return authToken(userData.currentUser)
 				.then(token => {
 					if (token) {
-						if (callback) {
-							callback(token);
+						if (success) {
+							success(token);
 						}
 					} else {
-						updateMessage('warn', 'No user signed in, redirecting to sign in page.');
-						load(login);
+						if (failure) {
+							failure();
+						}
 					}
 				})
 				.catch(function handleTokenError(error) {
@@ -181,14 +182,24 @@ const login = '/login';
 			}
 		},
 		init = function() {
-			checkAuth(
-				() => {
-					form.group.addEventListener('submit', rsvpEvent);
-					form.input.addGuest.addEventListener('click', addGuestEvent);
-					form.input.removeGuest.addEventListener('click', removeGuestEvent);
-				},
-				() => load(login)
-			);
+			const validate = function(breakoutNumber) {
+				console.log('validate called', breakoutNumber);
+				if (breakoutNumber > 0) {
+					setTimeout(() => {
+						checkAuth(
+							() => {
+								form.group.addEventListener('submit', rsvpEvent);
+								form.input.addGuest.addEventListener('click', addGuestEvent);
+								form.input.removeGuest.addEventListener('click', removeGuestEvent);
+							},
+							() => validate(breakoutNumber-1)
+						);
+					}, 500);
+				} else {
+					load(login);
+				}
+			};
+			validate(10);
 		}
 	;
 

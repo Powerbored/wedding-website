@@ -17,39 +17,40 @@ const
 			resource: 'src/components/rsvp/index.js'
 		}
 	},
-	templates = {
-		index: {
-			name: 'src/index.hbs',
-			components: [
-				components.countdown,
-				components.map
-			]
-		},
-		login: {
-			name: 'src/login.hbs',
-			components: [
-				components.cognitoLogin
-			]
-		},
-		rsvp: {
-			name: 'src/rsvp.hbs',
-			components: [
-				components.rsvp
-			]
-		}
-	},
 	pages = {
 		home: {
 			title: 'Home',
-			template: templates.index,
+			template: {
+				name: 'src/index.hbs',
+				components: [
+					components.countdown,
+					components.map
+				]
+			},
 		},
+		// about: {
+		// 	title: 'Information',
+		// 	template: {
+		// 		name: 'src/about.hbs'
+		// 	},
+		// },
 		login: {
 			title: 'Sign in',
-			template: templates.login,
+			template: {
+				name: 'src/login.hbs',
+				components: [
+					components.cognitoLogin
+				]
+			},
 		},
 		rsvp: {
 			title: 'RSVP',
-			template: templates.rsvp,
+			template: {
+				name: 'src/rsvp.hbs',
+				components: [
+					components.rsvp
+				]
+			},
 		},
 	},
 	structure = {
@@ -75,6 +76,5 @@ const
 export const content = {
 	pages,
 	structure,
-	templates,
 	components,
 };

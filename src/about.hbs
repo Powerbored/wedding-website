@@ -1,0 +1,7 @@
+
+{{importJsContent 'src/content.js'}}
+{{copyObjectChildToNewContext content.pages htmlWebpackPlugin.options.ref this 'page'}}
+
+{{#> main page nav=htmlWebpackPlugin.options.nav}}
+
+{{/main}}
