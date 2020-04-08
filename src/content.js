@@ -28,12 +28,13 @@ const
 				]
 			},
 		},
-		// about: {
-		// 	title: 'Information',
-		// 	template: {
-		// 		name: 'src/about.hbs'
-		// 	},
-		// },
+		photos: {
+			title: 'Photos',
+			template: {
+				name: 'src/photos.hbs',
+				components: [],
+			},
+		},
 		login: {
 			title: 'Sign in',
 			template: {
@@ -56,19 +57,14 @@ const
 	structure = {
 		index: pages.home,
 		pages: {
-			about: {
-				index: pages.about,
-				pages: {
-					author: {
-						index: pages.author,
-					},
-				},
+			photos: {
+				index: pages.photos,
 			},
 			rsvp: {
 				index: pages.rsvp,
 			},
 			login: {
-				index: pages.login
+				index: pages.login,
 			}
 		},
 	};
